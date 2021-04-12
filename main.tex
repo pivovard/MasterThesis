@@ -43,6 +43,7 @@
 
 % Umožňuje vkládání obrázků
 \usepackage[pdftex]{graphicx}
+\usepackage{float}
 
 % Odkazy v PDF jsou aktivní; navíc se automaticky vkládá
 % balíček 'url', který umožňuje např. dělení slov
@@ -70,8 +71,8 @@
 \maketitle
 \tableofcontents
 
-\include{diabetes}
-\include{analyza}
+\input{diabetes}
+\input{analyza}
 
 \bibliographystyle{csplainnatkiv}
 {\raggedright\small
