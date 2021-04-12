@@ -1,0 +1,11 @@
+\chapter{Analýza metod detekce příjmu karbohydrátů}
+
+Metody detekce karbohydrátů mohou být model-based nebo data-driven.
+
+Většina studií je založená na implementaci fyzického modelu (většinou Bergmanův minimální model) a aplikaci predikčního algoritmu jako je například Kalmanův filtr pro predikci jednotlivých stavů (glykémie a karbohydráty). Detekce karbohydrátů je pak porovnáním pozorovaných stavů a modelu vůči definovanému thresholdu, výpočtu cross-covariance nebo aplikováním rozhodovacích pravidel.
+
+U data-driven metod je extrakce vlastností kvantitativní nebo kvalitativní. Kvantitativní metoda je například analýza hlavních komponent. V kvalitativních modelech jsou časová data převedena na sekvenci kvalitativních proměnných k vytvoření kvalitativní reprezentace dat. Data-driven metody jsou méně závislé na přesnosti fyzického modelu, ale je potřeba pro jejich natrénování velkého množství vzorků. Mezi data-driven metody patří i neuronové sítě.
+
+\section{Bergmanův minimální model}
+
+\section{Metody založené na porovnání měřených hodnot vůči modelu}

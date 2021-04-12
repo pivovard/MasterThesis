@@ -1,0 +1,285 @@
+@book{Turksoy,
+ author = {{Kamuran Turksoy,Iman Hajizadeh, SediqehSamadi}},
+ title = {The Art of Computer Programming, Volume 2 (3rd Ed.): Seminumerical Algorithms},
+ year = {1997},
+ isbn = {0-201-89684-2},
+ publisher = {Addison-Wesley Longman Publishing Co., Inc.},
+ address = {Boston, MA, USA},
+}
+
+%%Diabetes
+@book{Diabetes.Psottova,
+ author = {{Psottová Jana}},
+ title = {Praktický průvodce cukrovkou III},
+ year = {2019},
+ isbn = {978-80-7345-630-6},
+ publisher = {Maxdorf s. r. o},
+ address = {Praha},
+}
+
+@book{Diabetes.Rybka,
+ author = {{Rybka Jaroslav}},
+ title = {Diabetes mellitus - komplikace a přidružená onemocnění: diagnostické a léčebné postupy},
+ year = {2007},
+ isbn = {9788024716718},
+ publisher = {Grada},
+ address = {Praha},
+}
+
+@book{Diabetes.Pelikan,
+ author = {{Pelikánová Terezie a Bartoš Vladimír}},
+ title = {Praktická diabetologie},
+ year = {2010},
+ isbn = {978-80-7345-216-2},
+ publisher = {Maxdorf},
+ address = {Praha},
+}
+
+@book{Diabetes.Perusicova,
+ author = {{Perušičová Jindra}},
+ title = {Diabetes mellitus 1. typu},
+ year = {2007},
+ isbn = {978-80-86256-49-8},
+ publisher = {Geum},
+ address = {Semily},
+}
+
+@article{Diabetes.TaiN,
+  author = {{Tai N., Wong F.S. \& Wen, L. }},
+  title = {The role of gut microbiota in the development of type 1, type 2 diabetes mellitus and obesity.},
+  journal={Rev Endocr Metab Disord}, 
+  year={2015},
+  volume={16},
+  number={},
+  pages={55-65},
+  url = {https://link.springer.com/article/10.1007/s11154-015-9309-0},
+  doi={10.1007/s11154-015-9309-0}
+}
+
+@article{Inzulinove.rezimy,
+  author = {{MUDr. Pavlína Piťhová}},
+  title = {Inzulinové režimy z klinického pohledu},
+  journal = {Interní medicína pro praxi},
+  issue_date = {},
+  volume = {12},
+  number = {11},
+  month = {},
+  year = {2010},
+  issn = {},
+  pages = {531-534},
+  url = {http://www.internimedicina.cz/pdfs/int/2010/11/02.pdf},
+  doi = {},
+  acmid = {},
+  publisher = {},
+  address = {},
+}
+
+@online{cukrovka.cz,
+ author = {{Prof. MUDr. František Saudek, DrSc.}},
+ key = {},
+ title = {Cukrovka},
+ publisher = {PANAX Co, s.r.o. a Diabetická asociace České republiky, z.s.},
+ year = {2017},
+ cited = {2021/04/11},
+ note = {},
+ url = {https://www.cukrovka.cz/}
+}
+
+@online{Wikiskripta,
+ author = {},
+ key = {},
+ title = {Diabetes mellitus},
+ publisher = {WikiSkripta},
+ year = {2021},
+ cited = {2021/04/11},
+ note = {},
+ url = {https://www.wikiskripta.eu/w/Diabetes_mellitus}
+}
+
+@online{WHO,
+ author = {},
+ key = {},
+ title = {Diabetes},
+ publisher = {World Health Organization},
+ year = {},
+ cited = {2021/04/11},
+ note = {},
+ url = {https://www.who.int/health-topics/diabetes#tab=tab_1}
+}
+
+%%Analyza
+@article{Real-timeinsulin,
+ title = {Real-time insulin bolusing for unannounced meals with artificial pancreas},
+ journal = {Control Engineering Practice},
+ volume = {59},
+ pages = {159-164},
+ year = {2017},
+ issn = {0967-0661},
+ doi = {https://doi.org/10.1016/j.conengprac.2016.08.001},
+ url = {https://www.sciencedirect.com/science/article/pii/S0967066116301642},
+ author = {Kamuran Turksoy and Iman Hajizadeh and Sediqeh Samadi and Jianyuan Feng and Mert Sevil and Minsun Park and Laurie Quinn and Elizabeth Littlejohn and Ali Cinar},
+ keywords = {Type 1 diabetes, Artificial pancreas, Unannounced meals, Bolus calculation, Hyperglycemia},
+ abstract = {Post-prandial hyperglycemia can occur more frequently in artificial pancreas systems without meal announcements that trigger insulin boluses. Meal announcements are manual feedforward inputs. We have developed a meal-detection and meal bolusing algorithm based on continuous glucose measurements without manual information from patients. Bergman's minimal model is modified and used in an unscented Kalman filter for state estimations. The estimated rate of appearance of glucose is used for meal detection and calculation of meal boluses. The algorithm is tested in simulation and clinical environments. The proposed algorithm decreases the frequency, duration and magnitude of hyperglycemia without causing any additional hypoglycemia.}
+}
+
+@Article{Unannounced Meals in the Artificial Pancreas,
+ AUTHOR = {Ramkissoon, Charrise M. and Herrero, Pau and Bondia, Jorge and Vehi, Josep},
+ TITLE = {Unannounced Meals in the Artificial Pancreas: Detection Using Continuous Glucose Monitoring},
+ JOURNAL = {Sensors},
+ VOLUME = {18},
+ YEAR = {2018},
+ NUMBER = {3},
+ ARTICLE-NUMBER = {884},
+ URL = {https://www.mdpi.com/1424-8220/18/3/884},
+ ISSN = {1424-8220},
+ ABSTRACT = {The artificial pancreas (AP) system is designed to regulate blood glucose in subjects with type 1 diabetes using a continuous glucose monitor informed controller that adjusts insulin infusion via an insulin pump. However, current AP developments are mainly hybrid closed-loop systems that include feed-forward actions triggered by the announcement of meals or exercise. The first step to fully closing the loop in the AP requires removing meal announcement, which is currently the most effective way to alleviate postprandial hyperglycemia due to the delay in insulin action. Here, a novel approach to meal detection in the AP is presented using a sliding window and computing the normalized cross-covariance between measured glucose and the forward difference of a disturbance term, estimated from an augmented minimal model using an Unscented Kalman Filter. Three different tunings were applied to the same meal detection algorithm: (1) a high sensitivity tuning, (2) a trade-off tuning that has a high amount of meals detected and a low amount of false positives (FP), and (3) a low FP tuning. For the three tunings sensitivities 99 ± 2%, 93 ± 5%, and 47 ± 12% were achieved, respectively. A sensitivity analysis was also performed and found that higher carbohydrate quantities and faster rates of glucose appearance result in favorable meal detection outcomes.},
+ DOI = {10.3390/s18030884}
+}
+
+@article{Probabilistic Evolving Meal Detection,
+ author = {Fraser Cameron, M.Sc. and Günter Niemeyer, Ph.D. and Bruce A. Buckingham, M.D.},
+ title = {Probabilistic Evolving Meal Detection and Estimation of Meal Total Glucose Appearance},
+ journal = {Journal of Diabetes Science and Technology},
+ issue_date = {September 2009},
+ volume = {3},
+ number = {5},
+ month = {sep},
+ year = {2009},
+ issn = {},
+ pages = {1022-1030},
+ url = {https://journals.sagepub.com/doi/pdf/10.1177/193229680900300505},
+ doi = {},
+ acmid = {},
+ publisher = {Diabetes Technology Society},
+ address = {},
+ }
+ 
+@article{An Unannounced Meal Detection Module for Artificial Pancreas Control Systems,
+  author={A. E. {Fathi} and E. {Palisaitis} and B. {Boulet} and L. {Legault} and A. {Haidar}},
+  booktitle={2019 American Control Conference (ACC)}, 
+  title={An Unannounced Meal Detection Module for Artificial Pancreas Control Systems}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={4130-4135},
+  url = {https://ieeexplore.ieee.org/abstract/document/8814932},
+  doi={10.23919/ACC.2019.8814932}
+}
+
+@article{Unannounced Meal Detection for Artificial Pancreas Systems Using Extended Isolation Forest,
+  author={F. {Zheng} and S. {Bonnet} and E. {Villeneuve} and M. {Doron} and A. {Lepecq} and F. {Forbes}},
+  booktitle={2020 42nd Annual International Conference of the IEEE Engineering in Medicine   Biology Society (EMBC)}, 
+  title={Unannounced Meal Detection for Artificial Pancreas Systems Using Extended Isolation Forest}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={5892-5895},
+  url = {https://ieeexplore.ieee.org/abstract/document/9176856}  
+  doi={10.1109/EMBC44109.2020.9176856}
+}
+  
+@article{Isolation Forest,
+  author={F. T. {Liu} and K. M. {Ting} and Z. {Zhou}},
+  booktitle={2008 Eighth IEEE International Conference on Data Mining}, 
+  title={Isolation Forest}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={413-422},
+  url = {https://ieeexplore.ieee.org/document/4781136}    
+  doi={10.1109/ICDM.2008.17}
+}
+
+@article{A Closed-Loop Artificial Pancreas Using Model,
+  author = {Hyunjin Lee, Ph.D., Bruce A. Buckingham, M.D., Darrell M. Wilson, M.D. and B. Wayne Bequette, Ph.D.},
+  title = {A Closed-Loop Artificial Pancreas Using Model Predictive Control and a Sliding Meal Size Estimator},
+  journal = {Journal of Diabetes Science and Technology},
+  issue_date = {September 2009},
+  volume = {3},
+  number = {5},
+  month = {sep},
+  year = {2009},
+  issn = {},
+  pages = {1082-1090},
+  url = {https://journals.sagepub.com/doi/pdf/10.1177/193229680900300511},
+  doi = {},
+  acmid = {},
+  publisher = {Diabetes Technology Society},
+  address = {},
+}
+
+@article{Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data,
+  author={S. {Samadi} and K. {Turksoy} and I. {Hajizadeh} and J. {Feng} and M. {Sevil} and A. {Cinar}},
+  journal={IEEE Journal of Biomedical and Health Informatics}, 
+  title={Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data}, 
+  year={2017},
+  volume={21},
+  number={3},
+  pages={619-627},
+  url = {https://ieeexplore.ieee.org/abstract/document/7870660},
+  doi={10.1109/JBHI.2017.2677953}
+}
+
+@article{VLNKOVÁ FILTRACE ELEKTROKARDIOGRAMŮ ,
+  author = {Ing. Lukáš Smital},
+  title = {Vlnková filtrace elektrokardiogramů},
+  journal = {},
+  issue_date = {},
+  volume = {},
+  number = {},
+  month = {},
+  year = {2013},
+  issn = {},
+  pages = {37},
+  url = {https://www.vutbr.cz/www_base/zav_prace_soubor_verejne.php?file_id=69903},
+  doi = {},
+  acmid = {},
+  publisher = {FAKULTA ELEKTROTECHNIKY A KOMUNIKAČNÍCH TECHNOLOGIÍ},
+  address = {},
+}
+
+@article{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes,
+  author={K. {Kölle} and T. {Biester} and S. {Christiansen} and A. L. {Fougner} and Ø. {Stavdahl}},
+  journal={IEEE Journal of Biomedical and Health Informatics}, 
+  title={Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1}, 
+  year={2020},
+  volume={24},
+  number={2},
+  pages={594-602},
+  url = {https://ieeexplore.ieee.org/abstract/document/8679995},
+  doi={10.1109/JBHI.2019.2908897}
+}  
+
+@article{Committed Moving Horizon Estimation for Meal Detection and Estimation in Type 1 Diabetes,
+  author={H. {Chen} and N. {Paoletti} and S. A. {Smolka} and S. {Lin}},
+  booktitle={2019 American Control Conference (ACC)}, 
+  title={Committed Moving Horizon Estimation for Meal Detection and Estimation in Type 1 Diabetes}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={4765-4772},
+  url = {https://ieeexplore.ieee.org/document/8814868},
+  doi={10.23919/ACC.2019.8814868}
+} 
+
+@article{Predicting the meal macronutrient composition from continuous glucose monitors,
+  author={Z. {Huo} and B. J. {Mortazavi} and T. {Chaspari} and N. {Deutz} and L. {Ruebush} and R. {Gutierrez-Osuna}},
+  booktitle={2019 IEEE EMBS International Conference on Biomedical   Health Informatics (BHI)}, 
+  title={Predicting the meal macronutrient composition from continuous glucose monitors}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={1-4},
+  url = {https://ieeexplore.ieee.org/document/8834488},
+  doi={10.1109/BHI.2019.8834488}
+}
+
+@article{jose2021continuous,
+  title={Continuous Glucose Monitoring Prediction}, 
+  author={Julia Ann Jose and Trae Waggoner and Sudarsan Manikandan},
+  year={2021},
+  url = {https://arxiv.org/ftp/arxiv/papers/2101/2101.02557.pdf},
+  eprint={2101.02557},
+  archivePrefix={arXiv},
+  primaryClass={q-bio.OT}
+}
