@@ -1,14 +1,34 @@
 \chapter{Analýza metod detekce příjmu karbohydrátů}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+
+Detekce příjmu karbohydrátů je důležitou součástí autonomních systémů CGMS a inzulinove pumpy. Při příjmu karbohydrátů se zvyšuje koncentrace glukózy v krvi, kterou je nutno korigovat bolusem inzulinu aby se předešlo stavu hyperglykémie. Tato dávka inzulinu musí odpovídat množství přijatých karbohydrátů. Příliš velká dávka může vést k hypoglykémii.
 
 Metody detekce karbohydrátů mohou být model-based nebo data-driven.
 
 Většina studií je založená na implementaci fyzického modelu (většinou Bergmanův minimální model) a aplikaci predikčního algoritmu jako je například Kalmanův filtr pro predikci jednotlivých stavů (glykémie a karbohydráty). Detekce karbohydrátů je pak porovnáním pozorovaných stavů a modelu vůči definovanému thresholdu, výpočtu cross-covariance nebo aplikováním rozhodovacích pravidel.
 
-U data-driven metod je extrakce vlastností kvantitativní nebo kvalitativní. Kvantitativní metoda je například analýza hlavních komponent. V kvalitativních modelech jsou časová data převedena na sekvenci kvalitativních proměnných k vytvoření kvalitativní reprezentace dat. Data-driven metody jsou méně závislé na přesnosti fyzického modelu, ale je potřeba pro jejich natrénování velkého množství vzorků. Mezi data-driven metody patří i neuronové sítě.
+U data-driven metod se vychází z naměřených dat. Extrakce vlastností je u těchto metod kvantitativní nebo kvalitativní. Kvantitativní metoda je například analýza hlavních komponent. V kvalitativních modelech jsou časová data převedena na sekvenci kvalitativních proměnných k vytvoření kvalitativní reprezentace dat. Data-driven metody jsou méně závislé na přesnosti fyzického modelu, ale je potřeba pro jejich natrénování velkého množství vzorků. Mezi data-driven metody patří i neuronové sítě.
 
 \section{Bergmanův minimální model}
 
-\section{Metody založené na porovnání měřených hodnot vůči modelu}
+Bergmanův minimální model je nelineární dynamický model koncentrace glukózy v plazmě. Tento model popisuje vývoj hladiny glukózy v plazmě na základě koncentrace a účinnosti inzulinu a přijatých karbohydrátů. Model určuje sada diferenciálních rovnic prvního řádu:
+
+\begin{figure}[H]{
+\label{fig:bergman1}
+\includegraphics{img/analyza/bergman1.jpg}}
+\end{figure}
+
+\noindent kde $G_b$ je koncentrace glukózy v plazmě, $I_p$ je koncentrace inzulinu v plazmě, $I_eff$ je koncentrace efektivního inzulinu, $p_1, p_2, p_3, p_4$ jsou parametry a $R_a (t)$ je míra výskytu glukózy definovaná jako:
+
+\begin{figure}[H]{
+\label{fig:bergman2}
+\includegraphics{img/analyza/bergman2.jpg}}
+\end{figure}
+
+\noindent kde $C(t)$ je množství přijatých karbohydrátů, $V$  je distribuční objem a $\tau$ je vrchol absorbce karbohydrátů \citep{Analyza.Bergman,Analyza.Turksoy}.
+
+
+\section{Model-based metody}
 \subsection{Real-time insulin bolusing for unannounced meals with artificial pancreas \citep{Analyza.Turksoy}}
 \label{ch:turksoy}
 
@@ -96,126 +116,7 @@ Tato metoda využívá lineárního Kalmanova filtru (nad linearizovaným Bergma
 \end{figure}
 
 
-\section{Unannounced Meal Detection for Artificial Pancreas Systems Using Extended Isolation Forest \citep{Analyza.ExtendedIsolationForest}}
-\label{ch:forest}
-
-Isolation forest je metoda, která detekuje a izoluje anomálie v datech. Data jsou rekurzivně rozdělena do stromové struktury (iTree - isolation tree) náhodným výběrem atributů z daných vlastnosti (feature) dokud nejsou jednotlivé instance izolovány. Toto náhodné rozdělení má pro anomálie signifikantně kratší cestu ve stromové struktuře \citep{Analyza.IsolationForest}.
-
-Vlastnosti které slouží jako vstup pro Extended isolation forest jsou derivace naměřené glukózy v plazmě \textbf{dGp}, zadané karbohydráty (pokud byly zadány) a podaný inzulin. Pro výpočet derivace glukózy v čase t \textbf{dGp(t)} je potřeba znát naměřenou glukózu v čase t+1 \textbf{Gp(t+1)}. Z toho důvodu nastává zpoždění detekce o 5 minut. Detekce anomálií je pak pomocí dvou thresholdů pro menší a větší míru rizika nezadaných karbohydrátů.
-Příklad detekce anomálií je na obrázku \ref{fig:forest}. Notifikace je vznešena pokud se objeví jedna anomálie s větší mírou rizika (červené), nebo 3 anomálie s menší mírou rizika (modré).
-
-\begin{figure}[H]
-\caption{Úspěšnost detekce vzhledem hladině glukózy a množství přijatých karbohydrátů}
-\label{fig:forest}
-\includegraphics[width=1\textwidth]{img/analyza/forest.png}
-\end{figure}
-
-Metoda byla testována na čtyřech virtuálních pacientech (pro jejich simulaci byl využit Hovorky model) V simulovaných 5ti denních scénářích přijal pacient průměrně 3,4 jídla za den. Pro scénář kdy bylo jídlo v 50\% zadáno a v 50\% nezadáno dosahovala metoda úspěšnost 90,8\% a v 6,2\% případů byla falešně pozitivní. V případě že jídlo nebylo zadáno vůbec byla úspěšnost 90,0\% a v 11,47\% falešně pozitivní. Zpoždění detekce je 26-39 minut.
-
-
-\section{A Closed-Loop Artificial Pancreas Using Model Predictive Control and a Sliding Meal Size Estimator \citep{Analyza.Thresholds}}
-\label{ch:thrashold}
-
-Autoři této práce použili hlasovací schéma pro detekci karbohydrátů. Algoritmus je založen na kontinuálním  pozorování první a druhé derivace koncentrace glukózy, které při splnění kritérii vyšle sérii impulsů (až 15 impulzů během 30ti minut). Tato metoda je založena na vzorkování po jedné minutě.
-
- Impulsy jsou vyslány při překročení thresholdu. Pro nastavení thresholdu se vychází z toho, že jedno jídlo způsobí nárůst rychlosti výskytu glukózy v krvi dG (první derivace) 0-2 mg/dl/min, druhé derivace d2G 0-0,02 mg/dl/min2. Thresholdy jsou proto nastaveny na {0, 0.5, 1.25, 1.8} pro dG a {0, 0.005, 0.0125, 0.018} pro d2G. Jelikož je mezi dG a d2G zpoždění, další impuls je vyslán pokud se hodnoty kříží. Vyslání impulsů je na obrázku \ref{fig:threshold1}.
- 
-Tyto impulsy jsou poté zesíleny a převedeny na gramy karbohydrátů (ve studii počítají se 4g na impuls), viz obrázek \ref{fig:threshold2}.
-
-Počet impulsů, časové okno, thresholdy a množství karbohydrátů na impuls lze individuálně změnit podle diabetického profilu pacienta.
-
-\begin{figure}[H]
-\caption{Impulsy}
-\label{fig:threshold1}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyza/threshold1.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Predikované karbohydráty}
-\label{fig:threshold2}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyza/threshold2.png}
-\end{figure}
-
-V tabulce {tab:threshold3} jsou uvedeny výsledky provedeného testování. Algoritmus dosahuje úspěšnost 82\% a průměrný odhad jídla je 36,41g karbohydrátů. Zpoždění detekce je průměrně 31 minut.
-
-\begin{table}[H]
-\caption{Výsledky}
-\label{tab:threshold3}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyza/threshold3.png}
-\end{table}
-
-
-\section{Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data \citep{Analyza.WaveletEst}}
-\label{ch:wavelet}
-
-V této studii je použito waveletové filtrování pro odstranění šumu z dat naměřených CGM. Waveletové filtrování rozdělí frekvenční obsah vstupních dat do několika pásem, kde se jinou měrou projevuje šum a užitečná složka \citep{Analyza.Wavelet}.Zvolený parametr míry filtrování musí dostatečně velký, aby odfiltroval šum, ale ne přiliš, aby se neodfiltrovaly ostré nárůsty způsobené příjmem karbohydrátů.
-
-Pro extrakci vlastností je použita trojúhelníková kvalitativní reprezentace. V kvalitativních metodách extrakce dat jsou časová data konvertována na sekvenci kvalitativních proměnných. Pro trojúhelníkovou kvalitativní reprezentaci jsou kvalitativní proměnné trojúhelníky (viz obrázek \ref{fig:wavelet1}). Trojúhelníky dělí data na epizody (obrázek \ref{fig:wavelet2}) jejichž hraniční body jsou buďto extrém (dG/dt=0) nebo inflexní bod (d2G/dt=0). Epizody se nepřekrývají a každé dvě sousední jsou rozdílné. Hodnoty dx a ddx jsou vypočteny z numerické derivace a mapovány na +/0/-.
-
-\begin{figure}[H]
-\caption{Kvalitativní proměnné trojúhelníkové kvalitativní reprezentace}
-\label{fig:wavelet1}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyza/wavelet1.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Data rozdělená na epizody}
-\label{fig:wavelet2}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyza/wavelet2.png}
-\end{figure}
-
-Pro tuto studii byla definice epizod modifikována tak, že velikost epizody je pevně daná a obsahuje určitý počet vzorků. Epizody se překrývají a sousední mohou být stejné. Výpočet dx a ddx udávající tvar trojúhelníku je:
-
-\begin{figure}[H]
-\label{fig:wavelet3}
-\includegraphics{img/analyza/wavelet3.png}
-\end{figure}
-
-Do trojúhelníkové reprezentace se přidá neurčitost (fuzzy logika) tak, že epizodu popisuje více tvarů trojúhelníků (definují se další způsoby pro výpočet $d^1x$ a $d^2x$).
-
-Pro detekci příjmu karbohydrátů se každému trojúhelníku přiřadí váha odpovídající tvaru. Vynásobením vah s vektorem fuzzy trojúhelníkové reprezentace vznikne proměnná “increase of glucose trend index” Igt pro každý vzorek (váhy jsou nastaveny tak, že hodnota $I_gt$ je v intervalu<-3;3>). Pakliže hodnota Igt (nebo součet Igt v časovém okně) překročí hranici 2.5, je detekován příjem.
-
-Úspěšnost detekce byla u dospělých 87\% (falešně pozitivní 21\%) a u dětí 93\% (falešně pozitivní 3\%). Zpoždění detekce je přibližně půl hodiny.
-
-
-\section{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1 \citep{Analyza.LDA}}
-\label{ch:lda}
-
-V této studii je použit Moving horizon estimator pro odhad glukózy a Lineární diskriminační analýza pro klasifikaci.
-
-Porovnávány jsou 4 metody (2 na základě klasifikace a 2 metody pro porovnání za použití thresholdu):
-
-\begin{enumerate}
-\item \textbf{Klasifikace odhadu Ra horizontů} \\
-Odhady rychlosti výskytu glukózy Ra horizontů jsou predikovány na základě Bergmanova modelu. Na tyto Ra je použita Lineární diskriminační analýza (LDA).
-\item \textbf{Klasifikace CGM horizontů} \\
-Klasifikace je na hrubých vyhlazených datech z CGM modulu. Také v tomto případě je použita LDA.
-\item \textbf{Threshold pro aktuální Ra odha} \\
-Detekce přijatých karbohydrátů je pokud Ra překročí daný threshold (viz kapitola \ref{ch:turksoy}).
-\item \textbf{GRID algoritmus} \\
-Threshold pro naměřené hodnoty glukózy a jejich rychlost změny.
-\end{enumerate}
-
-Na obrázku \ref{fig:lda1} je výkonnost jednotlivých metod při provedeném experimentu. Je vidět, že metody využívající LDA si vedly výrazně lépe. Jejich úspěšnost se pohybuje kolem 88\%. Také v případě času potřebného k detekci překonaly metody založené na threshold. Srovnání zpoždění u jednotlivých metod je na obrázku \ref{fig:lda2}.
-
-\begin{figure}[H]
-\caption{Úspěšnost detekce jednotlivých metod}
-\label{fig:lda1}
-\centering
-\includegraphics[width=0.6\textwidth]{img/analyza/lda1.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Zpoždění detekce}
-\label{fig:lda2}
-\centering
-\includegraphics[width=0.6\textwidth]{img/analyza/lda2.png}
-\end{figure}
-
-
-\section{Committed Moving Horizon Estimation for Meal Detection and Estimation in Type 1 Diabetes \citep{Analyza.MovingHorizon}}
+\subsection{Committed Moving Horizon Estimation for Meal Detection and Estimation in Type 1 Diabetes \citep{Analyza.MovingHorizon}}
 \label{ch:horizon}
 
 Committed Moving Horizon Estimation (CMHE) umožňuje predikovat čas a velikost nehlášených jídel. Metoda je založena na Moving Horizon Estimation (MHE). MHE je metoda odhadů omezených stavů nelineárního diskrátního modelu, která predikuje sekvenci stavových proměnných a poruch $\delta$ (disturbance) tak, že minimalizuje chybu mezi predikovanými a měřenými hodnotami \citep{Analyza.MovingHorizon}. V případě detekce karbohydrátů je modelem glukózo regulační systém člověka (ve studii je použit Bergmanův minimální model) a poruchami se rozumí přijaté karbohydráty. MHE, na rozdíl od Kalmanova filtru, nepočítá s normálním rozdělením poruch. 
@@ -250,6 +151,126 @@ V provedeném experimentu je měření prováděno každou minutu, časové okno
 \centering
 \includegraphics[width=1\textwidth]{img/analyza/horizon5.png}
 \end{table}
+
+
+\section{Data-driven metody}
+\subsection{Unannounced Meal Detection for Artificial Pancreas Systems Using Extended Isolation Forest \citep{Analyza.ExtendedIsolationForest}}
+\label{ch:forest}
+
+Isolation forest je metoda, která detekuje a izoluje anomálie v datech. Data jsou rekurzivně rozdělena do stromové struktury (iTree - isolation tree) náhodným výběrem atributů z daných vlastnosti (feature) dokud nejsou jednotlivé instance izolovány. Toto náhodné rozdělení má pro anomálie signifikantně kratší cestu ve stromové struktuře \citep{Analyza.IsolationForest}.
+
+Vlastnosti které slouží jako vstup pro Extended isolation forest jsou derivace naměřené glukózy v plazmě \textbf{dGp}, zadané karbohydráty (pokud byly zadány) a podaný inzulin. Pro výpočet derivace glukózy v čase t \textbf{dGp(t)} je potřeba znát naměřenou glukózu v čase t+1 \textbf{Gp(t+1)}. Z toho důvodu nastává zpoždění detekce o 5 minut. Detekce anomálií je pak pomocí dvou thresholdů pro menší a větší míru rizika nezadaných karbohydrátů.
+Příklad detekce anomálií je na obrázku \ref{fig:forest}. Notifikace je vznešena pokud se objeví jedna anomálie s větší mírou rizika (červené), nebo 3 anomálie s menší mírou rizika (modré).
+
+\begin{figure}[H]
+\caption{Úspěšnost detekce vzhledem hladině glukózy a množství přijatých karbohydrátů}
+\label{fig:forest}
+\includegraphics[width=1\textwidth]{img/analyza/forest.png}
+\end{figure}
+
+Metoda byla testována na čtyřech virtuálních pacientech (pro jejich simulaci byl využit Hovorky model) V simulovaných 5ti denních scénářích přijal pacient průměrně 3,4 jídla za den. Pro scénář kdy bylo jídlo v 50\% zadáno a v 50\% nezadáno dosahovala metoda úspěšnost 90,8\% a v 6,2\% případů byla falešně pozitivní. V případě že jídlo nebylo zadáno vůbec byla úspěšnost 90,0\% a v 11,47\% falešně pozitivní. Zpoždění detekce je 26-39 minut.
+
+
+\subsection{A Closed-Loop Artificial Pancreas Using Model Predictive Control and a Sliding Meal Size Estimator \citep{Analyza.Thresholds}}
+\label{ch:thrashold}
+
+Autoři této práce použili hlasovací schéma pro detekci karbohydrátů. Algoritmus je založen na kontinuálním  pozorování první a druhé derivace koncentrace glukózy, které při splnění kritérii vyšle sérii impulsů (až 15 impulzů během 30ti minut). Tato metoda je založena na vzorkování po jedné minutě.
+
+ Impulsy jsou vyslány při překročení thresholdu. Pro nastavení thresholdu se vychází z toho, že jedno jídlo způsobí nárůst rychlosti výskytu glukózy v krvi dG (první derivace) 0-2 mg/dl/min, druhé derivace d2G 0-0,02 mg/dl/min2. Thresholdy jsou proto nastaveny na {0, 0.5, 1.25, 1.8} pro dG a {0, 0.005, 0.0125, 0.018} pro d2G. Jelikož je mezi dG a d2G zpoždění, další impuls je vyslán pokud se hodnoty kříží. Vyslání impulsů je na obrázku \ref{fig:threshold1}.
+ 
+Tyto impulsy jsou poté zesíleny a převedeny na gramy karbohydrátů (ve studii počítají se 4g na impuls), viz obrázek \ref{fig:threshold2}.
+
+Počet impulsů, časové okno, thresholdy a množství karbohydrátů na impuls lze individuálně změnit podle diabetického profilu pacienta.
+
+\begin{figure}[H]
+\caption{Impulsy}
+\label{fig:threshold1}
+\centering
+\includegraphics[width=0.8\textwidth]{img/analyza/threshold1.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Predikované karbohydráty}
+\label{fig:threshold2}
+\centering
+\includegraphics[width=0.8\textwidth]{img/analyza/threshold2.png}
+\end{figure}
+
+V tabulce {tab:threshold3} jsou uvedeny výsledky provedeného testování. Algoritmus dosahuje úspěšnost 82\% a průměrný odhad jídla je 36,41g karbohydrátů. Zpoždění detekce je průměrně 31 minut.
+
+\begin{table}[H]
+\caption{Výsledky}
+\label{tab:threshold3}
+\centering
+\includegraphics[width=0.8\textwidth]{img/analyza/threshold3.png}
+\end{table}
+
+
+\subsection{Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data \citep{Analyza.WaveletEst}}
+\label{ch:wavelet}
+
+V této studii je použito waveletové filtrování pro odstranění šumu z dat naměřených CGM. Waveletové filtrování rozdělí frekvenční obsah vstupních dat do několika pásem, kde se jinou měrou projevuje šum a užitečná složka \citep{Analyza.Wavelet}.Zvolený parametr míry filtrování musí dostatečně velký, aby odfiltroval šum, ale ne přiliš, aby se neodfiltrovaly ostré nárůsty způsobené příjmem karbohydrátů.
+
+Pro extrakci vlastností je použita trojúhelníková kvalitativní reprezentace. V kvalitativních metodách extrakce dat jsou časová data konvertována na sekvenci kvalitativních proměnných. Pro trojúhelníkovou kvalitativní reprezentaci jsou kvalitativní proměnné trojúhelníky (viz obrázek \ref{fig:wavelet1}). Trojúhelníky dělí data na epizody (obrázek \ref{fig:wavelet2}) jejichž hraniční body jsou buďto extrém (dG/dt=0) nebo inflexní bod (d2G/dt=0). Epizody se nepřekrývají a každé dvě sousední jsou rozdílné. Hodnoty dx a ddx jsou vypočteny z numerické derivace a mapovány na +/0/-.
+
+\begin{figure}[H]
+\caption{Kvalitativní proměnné trojúhelníkové kvalitativní reprezentace}
+\label{fig:wavelet1}
+\centering
+\includegraphics[width=0.8\textwidth]{img/analyza/wavelet1.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Data rozdělená na epizody}
+\label{fig:wavelet2}
+\centering
+\includegraphics[width=0.8\textwidth]{img/analyza/wavelet2.png}
+\end{figure}
+
+Pro tuto studii byla definice epizod modifikována tak, že velikost epizody je pevně daná a obsahuje určitý počet vzorků. Epizody se překrývají a sousední mohou být stejné. Výpočet dx a ddx udávající tvar trojúhelníku je:
+
+\begin{figure}[H]
+\label{fig:wavelet3}
+\includegraphics{img/analyza/wavelet3.png}
+\end{figure}
+
+Do trojúhelníkové reprezentace se přidá neurčitost (fuzzy logika) tak, že epizodu popisuje více tvarů trojúhelníků (definují se další způsoby pro výpočet $d^1x$ a $d^2x$).
+
+Pro detekci příjmu karbohydrátů se každému trojúhelníku přiřadí váha odpovídající tvaru. Vynásobením vah s vektorem fuzzy trojúhelníkové reprezentace vznikne proměnná “increase of glucose trend index” Igt pro každý vzorek (váhy jsou nastaveny tak, že hodnota $I_gt$ je v intervalu<-3;3>). Pakliže hodnota Igt (nebo součet Igt v časovém okně) překročí hranici 2.5, je detekován příjem.
+
+Úspěšnost detekce byla u dospělých 87\% (falešně pozitivní 21\%) a u dětí 93\% (falešně pozitivní 3\%). Zpoždění detekce je přibližně půl hodiny.
+
+
+\subsection{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1 \citep{Analyza.LDA}}
+\label{ch:lda}
+
+V této studii je použit Moving horizon estimator pro odhad glukózy a Lineární diskriminační analýza pro klasifikaci.
+
+Porovnávány jsou 4 metody (2 na základě klasifikace a 2 metody pro porovnání za použití thresholdu):
+
+\begin{enumerate}
+\item \textbf{Klasifikace odhadu Ra horizontů} \\
+Odhady rychlosti výskytu glukózy Ra horizontů jsou predikovány na základě Bergmanova modelu. Na tyto Ra je použita Lineární diskriminační analýza (LDA).
+\item \textbf{Klasifikace CGM horizontů} \\
+Klasifikace je na hrubých vyhlazených datech z CGM modulu. Také v tomto případě je použita LDA.
+\item \textbf{Threshold pro aktuální Ra odha} \\
+Detekce přijatých karbohydrátů je pokud Ra překročí daný threshold (viz kapitola \ref{ch:turksoy}).
+\item \textbf{GRID algoritmus} \\
+Threshold pro naměřené hodnoty glukózy a jejich rychlost změny.
+\end{enumerate}
+
+Na obrázku \ref{fig:lda1} je výkonnost jednotlivých metod při provedeném experimentu. Je vidět, že metody využívající LDA si vedly výrazně lépe. Jejich úspěšnost se pohybuje kolem 88\%. Také v případě času potřebného k detekci překonaly metody založené na threshold. Srovnání zpoždění u jednotlivých metod je na obrázku \ref{fig:lda2}.
+
+\begin{figure}[H]
+\caption{Úspěšnost detekce jednotlivých metod}
+\label{fig:lda1}
+\centering
+\includegraphics[width=0.6\textwidth]{img/analyza/lda1.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Zpoždění detekce}
+\label{fig:lda2}
+\centering
+\includegraphics[width=0.6\textwidth]{img/analyza/lda2.png}
+\end{figure}
 
 
 \section{Metody využívající neuronové sítě}
@@ -314,6 +335,8 @@ V tabulce \ref{tab:res} je srovnání jednotlivých metod pro detekci karbohydr�
 \ref{ch:diff} & - & - & - & 11 & 0\tabularnewline
 \hline 
 \ref{ch:nekonzistence} & 30-50 min & 93.23\% & 6.77\% & - & 4.17\%\tabularnewline
+\hline
+\ref{ch:horizon} & 20 min & 88.5\% & 11.5\% & - & 2.6FP/den\tabularnewline
 \hline 
 \ref{ch:forest} & 26-39 min & 90\% & 10\% & - & 11.47\%\tabularnewline
 \hline 
@@ -321,11 +344,9 @@ V tabulce \ref{tab:res} je srovnání jednotlivých metod pro detekci karbohydr�
 \hline 
 \ref{ch:wavelet} & 30 min (avg.) & 87\% & 13\% & - & 21\%\tabularnewline
 \hline 
-\ref{ch:lda} Ra horizont & 18.59 min & 92\% & 8\% & - & 1.5FP/den\tabularnewline
+\ref{ch:lda} Ra & 18.59 min & 92\% & 8\% & - & 1.5FP/den\tabularnewline
 \hline 
-\ref{ch:lda} CGM horinzont & 11.78 min & 90\% & 10\% & - & 1.37FP/den\tabularnewline
-\hline
-\ref{ch:horizon} & 20 min & 88.5\% & 11.5\% & - & 2.6FP/den\tabularnewline
+\ref{ch:lda} CGM & 11.78 min & 90\% & 10\% & - & 1.37FP/den\tabularnewline
 \hline
 \ref{ch:neuronka} & 8 hodin & 0.39{***} & & & \tabularnewline
 \hline
@@ -333,10 +354,13 @@ V tabulce \ref{tab:res} je srovnání jednotlivých metod pro detekci karbohydr�
 \begin{flushleft}
 * doba detekce karbohydrátů od příjejí jídla v minutách\\
 {**} úspěšnost detekce jednotlivých oken v tabulce\\
-{***} RMSRE - střední kvadratická chyba
+{***} RMSRE - střední kvadratická chyba\\
 TP - true positive\\
 TN - true negative\\
 FP - false positive\\
 FN - false negative\\
 \end{flushleft}
 \end{table}
+
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
