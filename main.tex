@@ -44,6 +44,7 @@
 % Umožňuje vkládání obrázků
 \usepackage[pdftex]{graphicx}
 \usepackage{float}
+\usepackage{rotating}
 
 % Odkazy v PDF jsou aktivní; navíc se automaticky vkládá
 % balíček 'url', který umožňuje např. dělení slov
@@ -70,15 +71,19 @@
 %
 \maketitle
 \tableofcontents
-
+\parskip=6pt
+\input{uvod}
 \input{diabetes}
 \input{analyza}
 \input{analyzaPA}
 \input{smartcgms}
+\input{cho}
 
 \bibliographystyle{csplainnatkiv}
 {\raggedright\small
 \bibliography{literatura}
 }
+
+\input{appendix}
 
 \end{document}
