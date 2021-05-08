@@ -17,15 +17,15 @@ Pro detekci příjmu karbohydrátů jsem měl k dispozici anonymizovaná data ze
 \item Teplota okolí
 \end{itemize}
 
-Rozhodl jsem se vyzkoušet 3 metody:
+Pro detekci karbohydrátů jsem implementoval tyto 3 metody:
 \begin{itemize}
 \setlength\itemsep{0em}
-\item Lineární a kvadratická diskriminační analýza (kapitola \ref{ch:lda_qda})
 \item Long short-term memory neuronová síť (kapitola \ref{ch:lstm})
-\item Metoda thresholdů 1. derivace hodnot intersticiální glukózy \\(kapitola \ref{ch:threshold})
+\item Lineární a kvadratická diskriminační analýza (kapitola \ref{ch:lda_qda})
+\item Detekce hran pomocí thresholdů 1. derivace hodnot intersticiální glukózy \\(kapitola \ref{ch:threshold})
 \end{itemize}
 
-Programovací jazyk pro zpracování dat ze senzoru, návrh a vyhodnocení jednotlivých metod jsem zvolil Python. Python jsem zvolil pro jeho knihovny numpy, pandas a scipy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Přestože je Python interpretovaný jazyk a tudíž pomalý při zpracování velkého množství dat, tyto knihovny jsou implementovány v jazyce C a optimalizovány pro vysoký výkon. Doba zpracování dat je tak srovnatelná s jinými kompilovanými jazyky.
+Programovací jazyk pro zpracování dat ze senzoru, návrh a vyhodnocení jednotlivých metod jsem zvolil Python. Python jsem zvolil pro jeho knihovny numpy, pandas a scipy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Přestože je Python interpretovaný jazyk a tudíž pomalý při zpracování velkého množství dat, tyto knihovny jsou implementovány v jazyce C a optimalizovány pro vysoký výkon. Doba zpracování dat je tak srovnatelná s kompilovanými jazyky.
 
 Implementace do SmartCGMS je v jazyce C++.
 
@@ -57,30 +57,130 @@ Příklad signálů ze senzoru CGMS je v tabulce \ref{tab:cgms_data}
 \end{table}
 
 Informaci pro následnou detekci v sobě nesou sloupce Device Time (čas měření), Signal (typ signálu) a Info (hodnota). Ty jsem extrahoval do dvourozměrné tabulky, kde řádky jsou čas měření a sloupce jednotlivé typy signálů.
-Data interstciální glukózy jsem interpoloval Akima spline \citep{cho.akima}, z níž jsem získal chybějící hodnoty a derivace 1. 2. a 3 řádu. Pro vyhlazení hodnot intersticiální glukózy jsem použil Savitzky-Golay filtr \citep{cho.savgol} řádu 3 s velikostí okna 51. Jelikož různé typy signálu nejsou měřeny ve stejný okamžik, řádky jsem seskupil podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech.
+Data intersticiální glukózy jsem interpoloval Akima spline \citep{cho.akima}, z níž jsem získal chybějící hodnoty a derivace 1. 2. a 3. řádu. Pro vyhlazení hodnot intersticiální glukózy jsem použil Savitzky-Golay filtr \citep{cho.savgol} řádu 3 s velikostí okna 21. Jelikož různé typy signálu nejsou měřeny ve stejný okamžik, řádky jsem seskupil podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech.
 
 V grafech na obrázku \ref{fig:48h_dataset} jsou transformovaná data naměřená senzorem CGMS za 48 hodin. Na prvním grafu jsou hodnoty Intersticiální glukózy a její vyhlazení Savitzky-Golay filtrem. Druhý graf znázorňuje zadanou bazální dávku inzulinu, bolusy, příjem karbohydrátů a fyzickou aktivitu. Na posledním grafu jsou zbylé měřené hodnoty.
 
 \begin{figure}[H]
 \caption{Data ze CGMS}
-\label{tab:48h_dataset}
+\label{fig:48h_dataset}
 \centering
 \includegraphics[width=1\textwidth]{img/cho/48h_dataset.png}
 \end{figure}
 
-Python script zpracování dat je v souboru load\_data.py.
+Script pro transformaci se spustí zavoláním funkce:
+\begin{verbatim}
+load_log(patientID, path, filename)
+\end{verbatim}
+ze souboru \textbf{load\_log.py}, kdy \textit{patientID} je ID pacienta, \textit{path} je adresářová cesta k logům a \textit{filename} je jméno souboru, které následuje za ID. Pro spuštění transformace dat z více logů se zavolá funkce:
+\begin{verbatim}
+load_log_all(patientIDs, path, filename)
+\end{verbatim}
+kdy \textit{patientIDs} je pole ID logů, které chceme transformovat. Transformované logy jsou uloženy do .csv souboru \textbf{patientID-transposed.csv}.
+
+Načtení a modifikace transformovaných dat se spustí voláním:
+\begin{verbatim}
+load_data(patientID, from_file, fill_missing, smooth,
+           derivation, norm, verbose, graphs, analyze)
+\end{verbatim}
+ze souboru \textbf{load\_data.py}, potažmo
+\begin{verbatim}
+load_data_all(patientIDs, from_file, fill_missing, smooth,
+                derivation, norm, verbose, graphs, analyze)
+\end{verbatim}
+pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transformovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření ('' pro nenahrazení, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr derivation určuje způsob výpočtu derivací ('akima' pro Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet směrnice tečny v bodě). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace na interval <-1;1>, 'minmax' min-max normalizace na interval <0;1>). Parametr \textit{verbose} je pro vypsání průbehu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textbf{patientID-modified.csv}.
+
 
 \section{Lineární a kvadratická diskriminační analýza}
 \label{ch:lda_qda}
 
-Lineární diskriminační analýzu jsem se rozhodl implementovat vzhledem k vysoké úspešnosti a malému zpoždění, které dosáhli \citet{Analyza.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:lda}).
+Diskriminační analýzu jsem se rozhodl implementovat vzhledem k vysoké úspešnosti a malému zpoždění, které dosáhli \citet{Analyza.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:lda}).
 
-Diskriminační analýza
+\subsection{Teorie}
+Diskriminační analýza slouží k rozdělení prvků do konečného počtu tříd na základě lineární kombinace charakteristických prvků. Pro klasifikaci potřebujeme znát posteriory tříd \textbf{P(Y|X)}. Pravděpodobnostní model \textbf{P(X|y=k)} pro každou třídu \textbf{k} pro lineární a kvadratickou diskriminační analýzu je dán vícerozměrnou Gaussovo distribucí \citep{cho.book.lda}:
+
+\scalebox{1.2}{$P(X|y=k)=\frac{1}{(2\pi)^{p/2}|\sum_{k}|^{\frac{1}{2}}}e^{-\frac{1}{2}(x-\mu_{k})^{T}\sum^{-1}_{k}(x-\mu _{k})}$}\\\\
+kde \textbf{p} je počet prvků. Pro predikci je pak použito Bayesovo rozhodovací pravidlo \citep{cho.book.lda}:
+
+\scalebox{1.2}{$P(y=k|x)=\frac{P(x|y=k)P(y=k)}{P(x)}=\frac{P(x|y=k)P(y=k)}{\sum_{l}{P(x|y=l)P(y=l)}}$}\\\\
+kdy hledáme třídu s maximálním posteriorem.
+
+Logaritmus posterioru pro kvadratickou diskriminační analýzu (QDA) je \citep{cho.book.lda}:
+
+$P(y=k|x)=-\frac{1}{2}log|\sum_{k}|-\frac{1}{2}(x-\mu_{k})^{T}\sum^{-1}_{k}(x-\mu_{k})+logP(y=k)$\\\\
+Predikovaná třída je ta, která má maximální logaritmický posterior.
+
+Lineární diskriminační analýza (LDA) je speciální případ QDA, kdy předpokládáme, že třídy mají stejnou kovarianční matici.  Logaritmus posterioru je pak vyjádřen \citep{cho.scikit.lda}:
+
+$P(y=k|x)=-\frac{1}{2}(x-\mu_{k})^{T}\sum^{-1}(x-\mu_{k})+logP(y=k)$\\\\
+
+Vstupem diskriminační analýzy může být buď množina prvků pro daný časový okamžik nebo časové okno jednoho prvku.
+
+\subsection{Množina prvků}
+
+
+
+\subsubsection{Výsledky}
+
+\subsection{Časové okno}
+
+
 
 
 \section{Long short-term memory}
 \label{ch:lstm}
 
+\subsection{Teorie}
 
-\section{Threshold 1. derivace IST}
+Long short-term memory neuronová síť (LSTM) je speciální případ rekurentní neuronové sítě. Rekurentní neuronové sítě se vyznačují tím, že aktivace neuronu je zárověň vstupem dalšího neuronu (viz obrázek \ref{fig:rnn}). Předává se tak informace o předchozích aktivacích. RNN je tak vhodná pro predikci časových řad.
+
+\subsection{Model}
+
+\subsection{Výsledky}
+
+
+\section{Detekce hran intersticiální glukózy}
 \label{ch:threshold}
+
+Tato metoda detekuje vzestupné a klesající hrany průběhu intersticiální glukózy pomocí thresholdů první diference měřených hodnot intersticiální glukózy.
+
+Derivace funkce $f'(x)$ v bodě $x$ je směrnicí tečny funkce $f(x)$ v daném bodě. Pakliže je funkce $f(x)$ v bodě $x$ rostoucí, je její směrnice tečny v bodě $x$ kladná. Pokud je $f(x)$ klesající, její směrnice tečny je v daném místě záporná. Velikost derivace v bodě $x$ pak udává velikost změny $f(x)$, neboli říká, jak strmě funkce stoupá či klesá. Derivace funkce $f(x)$ v bodě $x_{1}$ můžeme vyjádřit jako:
+
+\scalebox{1.2}{$f'(x) = \frac{d}{dx}f(x) = \lim_{x \to x_{0}} \frac{f(x)-f(x_{0})}{x-x_{0}}$}
+
+Jelikož data ze senzoru CGMS jsou diskrétní, můžeme derivaci nahradit rovnicí první diference. Pro data intersticiální glukózy tak dostáváme vztah:
+
+\scalebox{1.2}{$\Delta IST = \frac{IST_{t} - IST_{t-1}}{\Delta t}$}
+
+Naměřená data mohou být zatížena šumem a případně i dočasnými výchylkami hodnot glukózy. Každá taková výchylka pak má značný vliv na hodnotu derivace. Z toho důvodu je potřeba data před výpočtem vyhladit. Pro vyhlazení jsem zvolil digitální Savitzky-Golay filtr. Každá podmnožina $2m+1$ prvků je vzorkována na polynom stupně $p (p\leq 2m)$ ve smyslu nejmenších čtverců\ref{cho.savgol}. Vyhlazená data vidíme na obrázku \ref{fig:savgol}.
+
+\begin{table}[H]
+\caption{Vyhlazená data intersticiální glukózy}
+\label{fig:savgol}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/savgol.png}
+\end{table}
+
+Následně se data ohodnotí. Pokud $\Delta IST$ překročí určitý threshold $th_{i}$, přiřadí se váha $w_{i}$. Takových dvojic thresholdů a vah může být libovolné množství. Experimentálně byla zjištěna zjištěna kombinace thresholdů $th=[0.0125, 0.018]$ a vah $w=[2.25, 3]$.
+
+Samotné ohodnocení podle thresholdů zachytí jakýkoli jednorázový větší výkyv v datech intersticiální glukózy. Jelikož příjem karbohydrátů se projevuje zvýšením glykémie v řádu desítek minut až hodin, chceme znát vývoj křivky intersticiální glukózy v čase. Z toho důvodu pro kladně ohodnocená data zvýšíme ohodnocení v případě, že předchozí hodnoty vykazují vzrůstající trend po dobu dvou hodin nazpět (tj. 24 hodnot, data jsou vzorkována po pěti minutách). Získáme tak aktivační funkci pro rostoucí hrany.
+
+\begin{verbatim}
+if activation[i] > 2:
+  for j in range(24):
+    if activation[i-j] >= 2+0.2*j:
+      activation[i] += 0.1*j
+\end{verbatim}
+
+Pro klesající hrany použijeme stejný postup, ale se záporným ohodnocením.
+
+V grafu na obrázku \ref{fig:hrany} je ukázka detekce hran. Červeně je aktivace vzestupné hrany, modře aktivace sestupné hrany posunuté. Počátek sestupné hrany je posunut na úrověň poslední hodnoty aktivace vzestupné hrany. Mezi vzestupnou a sestupnou hranou je vždy několik hodnot, kdy byla hladina intersticiální glukózy vyrovnaná.
+
+\begin{table}[H]
+\caption{Vyhlazená data intersticiální glukózy}
+\label{fig:savgol}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/savgol.png}
+\end{table}
+
+Jídlo je detekováno, pakliže aktivační funkce vzestupné hrany je větší než zvolený threshold. Nízký threshold detekuje většinu jídel, ale také může detekovat výkyvy nesouvisející s příjmem karbohydrátů. Naopak vysoce zvolený threshold nebude detekovat menší jídla. Řešením je použití více thresholdů pro stanovení pravděpodobnosti jídla.

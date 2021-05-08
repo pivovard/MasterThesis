@@ -305,6 +305,47 @@ author = {{Hovorka, Roman et al.}}
 %%AnalyzaPA
 
 
+%%SmartCGMS
+@article{cgms.koutny,
+title = {SmartCGMS as a Testbed for a Blood-Glucose Level Prediction and/or Control Challenge with (an FDA-Accepted) Diabetic Patient Simulation},
+journal = {Procedia Computer Science},
+volume = {177},
+pages = {354-362},
+year = {2020},
+note = {The 11th International Conference on Emerging Ubiquitous Systems and Pervasive Networks (EUSPN 2020) / The 10th International Conference on Current and Future Trends of Information and Communication Technologies in Healthcare (ICTH 2020) / Affiliated Workshops},
+issn = {1877-0509},
+doi = {https://doi.org/10.1016/j.procs.2020.10.048},
+url = {https://www.sciencedirect.com/science/article/pii/S1877050920323164},
+author = {Tomas Koutny and Martin Ubl},
+keywords = {diabetes, prediction, control, smartcgms},
+abstract = {Diabetic patient desires to avoid hypo- and hyperglycemic episodes, which result from insufficient insulin production. As the diabetes disease progresses, it requires an advance control of external insulin administration with an insulin pump. Given the importance of blood-glucose level prediction for the insulin therapy, there is a Blood-Glucose Level Prediction Challenge. This prediction is based on a post-mortem dataset, which include a number of signals related to the daily life of a diabetic patient. We propose replacing these post-mortem signals with an in-silico diabetic patient. For this purpose, we can use the SmartCGMS continuous glucose monitoring and controlling framework together with an FDA-accepted diabetic patient simulation. As a result, a competing researcher have the same conditions as a developer of a real-life insulin pump, connected to a real diabetic patient. When using SmartCGMS, simulated, prototyped and real devices can work together. This approach reduces the difference between laboratory and practical results, thus increasing the level of realism for the entire challenge. As a report on the current SmartCGMS state, we describe the previously unpublished features, which enable an improved glucose level prediction and/or control challenge.}
+}
+
+@article{cgms.ubl,
+title = {SmartCGMS as an Environment for an Insulin-Pump Development with FDA-Accepted In-Silico Pre-Clinical Trials},
+journal = {Procedia Computer Science},
+volume = {160},
+pages = {322-329},
+year = {2019},
+note = {The 10th International Conference on Emerging Ubiquitous Systems and Pervasive Networks (EUSPN-2019) / The 9th International Conference on Current and Future Trends of Information and Communication Technologies in Healthcare (ICTH-2019) / Affiliated Workshops},
+issn = {1877-0509},
+doi = {https://doi.org/10.1016/j.procs.2019.11.084},
+url = {https://www.sciencedirect.com/science/article/pii/S1877050919317843},
+author = {Martin Ubl and Tomas Koutny},
+keywords = {diabetes, glucose, monitoring, insulin pump, in-silico, pre-clinical trial},
+abstract = {Diabetes is a widespread civilization disease. It manifests with an elevated blood glucose level. In the long-term, elevated blood glucose level continuously damages organs. In the short-term, hypo- and hyperglycemia are acute complications. Insulin lowers blood glucose level by promoting its utilization. At basal rate, insulin pump delivers insulin to subcutaneous tissue to control blood glucose level. In addition, patient doses insulin boluses in accordance with estimated carbohydrate content of consumed meal. Control algorithm of the pump considers the boluses, when calculating the basal rate. In our previous work, we have proposed a parallel-architecture for the next-generation of glucose monitoring - SmartCGMS. It unifies the source-code base and the glucose-monitoring-and-control paradigm across real, simulated and prototyped devices. As the development continues, especially towards the pump-control algorithms, we face a problem of reducing the SmartCGMS requirements when considering a low-power hardware. In this paper, we present the modifications that lead to a reduced number of threads, while implementing the closed-loop feedback between a glucose sensor and insulin pump to conduct FDA accepted in-silico pre-clinical trials.}
+}
+
+@online{cgms.web,
+ author = {Tomas Koutny and Martin Ubl},
+ key = {smartcgms},
+ title = {SmartCGMS},
+ publisher = {Medicínská informatika, KIV, FAV, ZČU},
+ year = {2015},
+ cited = {2021/05/05},
+ note = {},
+ url = {https://diabetes.zcu.cz/smartcgms}
+}
 
 %%cho
 @online{cho.akima,
@@ -318,7 +359,7 @@ author = {{Hovorka, Roman et al.}}
  url = {https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.Akima1DInterpolator.html}
 }
 
-@online{cho.savgol,
+@online{cho.scipy.savgol,
  author = {},
  key = {scipy},
  title = {Savitzky-Golay filter},
@@ -327,6 +368,41 @@ author = {{Hovorka, Roman et al.}}
  cited = {2021/04/19},
  note = {},
  url = {https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html}
+}
+
+@article{cho.savgol,
+title = {Savitzky–Golay smoothing and differentiation filter for even number data},
+journal = {Signal Processing},
+volume = {85},
+number = {7},
+pages = {1429-1434},
+year = {2005},
+issn = {0165-1684},
+doi = {https://doi.org/10.1016/j.sigpro.2005.02.002},
+url = {https://www.sciencedirect.com/science/article/pii/S0165168405000654},
+author = {Jianwen Luo and Kui Ying and Jing Bai},
+keywords = {Savitzky–Golay, Smoothing, Differentiation, Least squares, Polynomial},
+abstract = {The Savitzky–Golay smoothing and differentiation filter optimally fits a set of data points to a polynomial in the least-squares sense. The Savitzky–Golay filter has been developed and generalized well in the literatures. However, the data subset is subject to an odd number (2m+1). In this communication, the Savitzky–Golay filter is extended for even number data. Simulations are performed to validate the feasibility of such an approach. And some corresponding properties are discussed.}
+}
+
+@book{cho.book.lda,
+ author = {Hastie T., Tibshirani R., Friedman J.},
+ title = {The Elements of Statistical Learning},
+ year = {2008},
+ isbn = {978-0-387-84858-7},
+ publisher = {Springer},
+ address = {},
+}
+
+@online{cho.scikit.lda,
+ author = {},
+ key = {scikit},
+ title = { Linear and Quadratic Discriminant Analysis},
+ publisher = {scikit-learn developers},
+ year = {2007-2020},
+ cited = {2021/05/04},
+ note = {},
+ url = {https://scikit-learn.org/stable/modules/lda_qda.html}
 }
 
 

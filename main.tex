@@ -2,7 +2,7 @@
 % Možné typy práce: BP (bakalářská), DP (diplomová)
 \documentclass[czech,DP]{thesiskiv}
 
-\author{David Pivovar}
+\author{Bc. David Pivovar}
 \declarationmale
 
 % Název práce
@@ -49,7 +49,7 @@
 % Odkazy v PDF jsou aktivní; navíc se automaticky vkládá
 % balíček 'url', který umožňuje např. dělení slov
 % uvnitř URL
-\usepackage[pdftex]{hyperref}
+\usepackage[pdftex,]{hyperref}
 \hypersetup{colorlinks=true,
   unicode=true,
   linkcolor=black,
@@ -61,6 +61,7 @@
 % (odvozen z csplainnat, http://repo.or.cz/w/csplainnat.git)
 % lze snadno modifikovat vzhled citací v textu
 \usepackage[numbers,sort&compress]{natbib}
+\usepackage{amsmath}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -84,6 +85,6 @@
 \bibliography{literatura}
 }
 
-\input{appendix}
+%\input{appendix}
 
 \end{document}
