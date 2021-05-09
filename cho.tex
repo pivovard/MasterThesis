@@ -22,14 +22,12 @@ Pro detekci karbohydrátů jsem implementoval tyto 3 metody:
 \setlength\itemsep{0em}
 \item Long short-term memory neuronová síť (kapitola \ref{ch:lstm})
 \item Lineární a kvadratická diskriminační analýza (kapitola \ref{ch:lda_qda})
-\item Detekce hran pomocí thresholdů 1. derivace hodnot intersticiální glukózy \\(kapitola \ref{ch:threshold})
+\item Detekce hran pomocí thresholdů 1. diference hodnot intersticiální glukózy \\(kapitola \ref{ch:threshold})
 \end{itemize}
 
-Programovací jazyk pro zpracování dat ze senzoru, návrh a vyhodnocení jednotlivých metod jsem zvolil Python. Python jsem zvolil pro jeho knihovny numpy, pandas a scipy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Přestože je Python interpretovaný jazyk a tudíž pomalý při zpracování velkého množství dat, tyto knihovny jsou implementovány v jazyce C a optimalizovány pro vysoký výkon. Doba zpracování dat je tak srovnatelná s kompilovanými jazyky.
+Programovací jazyk pro zpracování dat ze senzoru, návrh a vyhodnocení jednotlivých metod jsem zvolil Python. Python jsem zvolil pro jeho knihovny NumPy, pandas a SciPy pro zpracování a analýzu dat, matplotlib pro vykreslení dat a knihovny TensorFlow a Keras pro práci s neuronovými sítěmi. Přestože je Python interpretovaný jazyk a tudíž pomalý při zpracování velkého množství dat, tyto knihovny jsou implementovány v jazyce C a optimalizovány pro vysoký výkon. Doba zpracování dat je tak srovnatelná s kompilovanými jazyky.
 
 Implementace do SmartCGMS je v jazyce C++.
-
-\newpage
 
 \section{Příprava dat}
 
@@ -68,15 +66,16 @@ V grafech na obrázku \ref{fig:48h_dataset} jsou transformovaná data naměřen�
 \includegraphics[width=1\textwidth]{img/cho/48h_dataset.png}
 \end{figure}
 
-Script pro transformaci se spustí zavoláním funkce:
+\subsubsection{Spuštění}
+Script pro transponaci dat se spustí zavoláním funkce:
 \begin{verbatim}
-load_log(patientID, path, filename)
+load_log(patientID)
 \end{verbatim}
-ze souboru \textbf{load\_log.py}, kdy \textit{patientID} je ID pacienta, \textit{path} je adresářová cesta k logům a \textit{filename} je jméno souboru, které následuje za ID. Pro spuštění transformace dat z více logů se zavolá funkce:
+ze souboru \textbf{load\_log.py}, kdy \textit{patientID} je ID pacienta. Logy musí být umístěny v adresáři data/. Pro spuštění transformace dat z více logů se zavolá funkce:
 \begin{verbatim}
-load_log_all(patientIDs, path, filename)
+load_log_all(patientIDs)
 \end{verbatim}
-kdy \textit{patientIDs} je pole ID logů, které chceme transformovat. Transformované logy jsou uloženy do .csv souboru \textbf{patientID-transposed.csv}.
+kdy \textit{patientIDs} je pole ID logů, které chceme transformovat. Transponovaná data jsou uložena do .csv souboru \textbf{patientID-transposed.csv}.
 
 Načtení a modifikace transformovaných dat se spustí voláním:
 \begin{verbatim}
@@ -88,13 +87,101 @@ ze souboru \textbf{load\_data.py}, potažmo
 load_data_all(patientIDs, from_file, fill_missing, smooth,
                 derivation, norm, verbose, graphs, analyze)
 \end{verbatim}
-pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transformovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření ('' pro nenahrazení, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr derivation určuje způsob výpočtu derivací ('akima' pro Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet směrnice tečny v bodě). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace na interval <-1;1>, 'minmax' min-max normalizace na interval <0;1>). Parametr \textit{verbose} je pro vypsání průbehu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textbf{patientID-modified.csv}.
+pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transformovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření ('' pro nenahrazení, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr derivation určuje způsob výpočtu derivací ('akima' pro Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet směrnice tečny v bodě). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace směrodatnou odchylkou na interval <-1;1>, 'minmax' standardizace rozpětím na interval <0;1>). Parametr \textit{verbose} je pro vypsání průbehu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textbf{patientID-modified.csv}.
 
+
+\section{Long short-term memory}
+\label{ch:lstm}
+
+\subsection{Teorie}
+
+Rekurentní neuronové sítě jsou vhodné pro predikci sekvenčních dat (například časové řady). Vyznačují se tím, že si předávají informaci o předchozím stavu (aktivaci skryté vrstvy):
+
+$H_{t}=\sigma (W_{h}H_{t-1}+W_{x}X_{t}+b)$
+
+\noindent kde $W$ jsou váhy a $b$ je bias. Neurony které takto uchovávají svůj stav se nazývají buňky. Riziko RNN spočívá v náchylnosti vzniku jevu označovaného jako mizející nebo explodující gradient vznikajícího při zpětné propagaci, kdy hodnoty exponenciálně klesají nebo rostou. To je z důvodu, že se chyba propaguje přes všechny iterace. Tento problém eliminuje long short-term memory neuronová síť nebo GRU.
+
+\begin{figure}[H]
+\caption{Rekurentní neuronová síť}
+\label{fig:rnn}
+\centering
+\includegraphics[width=0.7\textwidth]{img/cho/rnn.jpeg}\\
+\textit{Zdroj: https://medium.com/}
+\end{figure}
+
+Long short-term memory neuronová síť (LSTM) je speciální případ rekurentní neuronové sítě. V každé iteraci si buňka uchovává dodatečnou informaci nazvanou \textit{memory}. 
+
+Nejprve se ze vstupního vektoru $X_{t}$ a stavu předchozí buňky $H_{t-1}$ spočte Forget gate $f_{t}$, Candidate layer $\bar{C}_{t}$ Input gate $I_{t}$ a Output gate $O_{t}$ \citep{cho.lsmt}:
+
+$f_{t}=\sigma(X_{t} \otimes U_{f}+H_{t-1} \otimes W_{f})$\\\indent
+$\bar{C}_{t}=tanh(X_{t} \otimes U_{c}+H_{t-1} \otimes W_{c})$\\\indent
+$I_{t}=\sigma(X_{t} \otimes U_{i}+H_{t-1} \otimes W_{i})$\\\indent
+$O_{t}=\sigma(X_{t} \otimes U_{u}+H_{t-1} \otimes W_{u})$
+
+\noindent kde $W$ a $U_{t}$ jsou váhové vektory. Následně se spočte \textit{memory} prvek $C_{t}$:
+
+$C_{t}=f_{t} \otimes C_{t-1} \oplus I_{t} \otimes \bar{C}_{t}$
+
+\noindent a výstupní stav $H_{t}$:
+
+$H_{t}=O_{t} \otimes tanh(C_{t})$
+
+Diagram LSTM buňky je na obrázku \ref{fig:lstm_cell}.
+
+\begin{figure}[H]
+\caption{LSTM buňka}
+\label{fig:lstm_cell}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/lstm_cell.png}
+\textit{Zdroj: https://medium.com/}
+\end{figure}
+
+\subsection{Model}
+
+Pro detekci karbohydrátů jsem sestavil sekvenční keras\footnote{Keras je nadstavba nad knihovnou TensorFlow pro neuronové sítě} model se čtyřmi vrstvami:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Obousměrná LSTM(128)
+\item Dropout(0,5)
+\item Dense(128)
+\item Dense(1)
+\end{itemize}
+
+LSTM vrstva má 128 neuronů. Vstupem vrstvy je časové okno N vstupních prvků velikosti W. Tvar vstupních dat je WxN:
+
+$\begin{bmatrix}
+X^{1}_{1} & X^{2}_{1} & ... & X^{N}_{1}\\
+X^{1}_{2} & X^{2}_{2} & ... & X^{N}_{2}\\
+... & ... & ... & ...\\
+X^{1}_{W} & X^{2}_{W} & ... & X^{N}_{W}
+\end{bmatrix}$
+
+Dropout vrstva s \textit{rate=0,5} náhodně nastaví některé vstupy na nulu v poměru 0,5. Nevynulované vstupy jsou škálovány 1/(1-rate), takže součet všech vstupů je nezměněn. To zabrání přetrénování neuronové sítě. Droupout vrstva je aplikována pouze při trénování sítě. První Dense vrstva má 128 neuronů, aktivační funkce je \textit{relu}. Druhá Dense vrstva s jedním neuronem je výstupní.
+
+Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. 80 \% dat je použito pro trénování, 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají.
+
+\subsubsection{Spuštění}
+
+Trénování neuronové sítě se spustí voláním funkce:
+\begin{verbatim}
+lstm(df, headers, label, width, epochs)
+\end{verbatim}
+ze souboru \textbf{cho\_detection.py}, kdy \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole sloupců vstupních dat, \textit{label} je predikovaná třída, \textit{width} je velikost okna a \textit{epochs} je počet epoch, kolikrát má proběhnout trénovací cyklus.
+
+Natrénovaný model se uloží do souboru \textbf{keras\_model.h5}.
+
+\subsubsection{Výsledky}
+
+Pro detekci karbohydrátů jsem jako vstupní prvky zvolil nevyhlazená data intersticiální glukózy, jejich derivaci 1. řádu a . Velikost okna je 24 (tj. 2 hodiny). Neuronová síť je trénovaná ve 100 epochách.
+
+Výsledkem jsou predikované odhady karbohydrátů. Pro detekci příjmu karbohydrátů určíme threshold. Pakliže množství karbohydrátů predikovaných neuronovou sítí je větší než tento threshold, je detekováno jídlo. Threshold je pro každého pacienta jiný.
+
+\textbf{//TODO tabulka vysledku}
 
 \section{Lineární a kvadratická diskriminační analýza}
 \label{ch:lda_qda}
 
-Diskriminační analýzu jsem se rozhodl implementovat vzhledem k vysoké úspešnosti a malému zpoždění, které dosáhli \citet{Analyza.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:lda}).
+Diskriminační analýzu jsem se rozhodl implementovat vzhledem k vysoké úspěšnosti a malému zpoždění, které dosáhli \citet{Analyza.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:lda}).
 
 \subsection{Teorie}
 Diskriminační analýza slouží k rozdělení prvků do konečného počtu tříd na základě lineární kombinace charakteristických prvků. Pro klasifikaci potřebujeme znát posteriory tříd \textbf{P(Y|X)}. Pravděpodobnostní model \textbf{P(X|y=k)} pro každou třídu \textbf{k} pro lineární a kvadratickou diskriminační analýzu je dán vícerozměrnou Gaussovo distribucí \citep{cho.book.lda}:
@@ -112,34 +199,28 @@ Predikovaná třída je ta, která má maximální logaritmický posterior.
 
 Lineární diskriminační analýza (LDA) je speciální případ QDA, kdy předpokládáme, že třídy mají stejnou kovarianční matici.  Logaritmus posterioru je pak vyjádřen \citep{cho.scikit.lda}:
 
-$P(y=k|x)=-\frac{1}{2}(x-\mu_{k})^{T}\sum^{-1}(x-\mu_{k})+logP(y=k)$\\\\
+$P(y=k|x)=-\frac{1}{2}(x-\mu_{k})^{T}\sum^{-1}(x-\mu_{k})+logP(y=k)$\\
 
 Vstupem diskriminační analýzy může být buď množina prvků pro daný časový okamžik nebo časové okno jednoho prvku.
 
 \subsection{Množina prvků}
 
-
+\subsubsection{Spuštění}
 
 \subsubsection{Výsledky}
 
+\textbf{//TODO tabulka vysledku}
+
 \subsection{Časové okno}
 
+\subsubsection{Spuštění}
+
+\subsubsection{Výsledky}
+
+\textbf{//TODO tabulka vysledku}
 
 
-
-\section{Long short-term memory}
-\label{ch:lstm}
-
-\subsection{Teorie}
-
-Long short-term memory neuronová síť (LSTM) je speciální případ rekurentní neuronové sítě. Rekurentní neuronové sítě se vyznačují tím, že aktivace neuronu je zárověň vstupem dalšího neuronu (viz obrázek \ref{fig:rnn}). Předává se tak informace o předchozích aktivacích. RNN je tak vhodná pro predikci časových řad.
-
-\subsection{Model}
-
-\subsection{Výsledky}
-
-
-\section{Detekce hran intersticiální glukózy}
+\section{Detekce hran průběhu intersticiální glukózy}
 \label{ch:threshold}
 
 Tato metoda detekuje vzestupné a klesající hrany průběhu intersticiální glukózy pomocí thresholdů první diference měřených hodnot intersticiální glukózy.
@@ -152,35 +233,46 @@ Jelikož data ze senzoru CGMS jsou diskrétní, můžeme derivaci nahradit rovni
 
 \scalebox{1.2}{$\Delta IST = \frac{IST_{t} - IST_{t-1}}{\Delta t}$}
 
-Naměřená data mohou být zatížena šumem a případně i dočasnými výchylkami hodnot glukózy. Každá taková výchylka pak má značný vliv na hodnotu derivace. Z toho důvodu je potřeba data před výpočtem vyhladit. Pro vyhlazení jsem zvolil digitální Savitzky-Golay filtr. Každá podmnožina $2m+1$ prvků je vzorkována na polynom stupně $p (p\leq 2m)$ ve smyslu nejmenších čtverců\ref{cho.savgol}. Vyhlazená data vidíme na obrázku \ref{fig:savgol}.
+Naměřená data mohou být zatížena šumem a případně i dočasnými výchylkami hodnot glukózy. Každá taková výchylka pak má značný vliv na hodnotu derivace. Z toho důvodu je potřeba data před výpočtem vyhladit. Pro vyhlazení jsem zvolil digitální Savitzky-Golay filtr. Každá podmnožina $2m+1$ prvků je vzorkována na polynom stupně $p (p\leq 2m)$ ve smyslu nejmenších čtverců\ref{cho.savgol}. Zvolil jsem polynom stupně 3 a velikost podmnožiny 21. Vyhlazená data vidíme v grafu na obrázku \ref{fig:savgol}.
 
-\begin{table}[H]
+\begin{figure}[H]
 \caption{Vyhlazená data intersticiální glukózy}
 \label{fig:savgol}
 \centering
 \includegraphics[width=1\textwidth]{img/cho/savgol.png}
-\end{table}
+\end{figure}
 
 Následně se data ohodnotí. Pokud $\Delta IST$ překročí určitý threshold $th_{i}$, přiřadí se váha $w_{i}$. Takových dvojic thresholdů a vah může být libovolné množství. Experimentálně byla zjištěna zjištěna kombinace thresholdů $th=[0.0125, 0.018]$ a vah $w=[2.25, 3]$.
 
 Samotné ohodnocení podle thresholdů zachytí jakýkoli jednorázový větší výkyv v datech intersticiální glukózy. Jelikož příjem karbohydrátů se projevuje zvýšením glykémie v řádu desítek minut až hodin, chceme znát vývoj křivky intersticiální glukózy v čase. Z toho důvodu pro kladně ohodnocená data zvýšíme ohodnocení v případě, že předchozí hodnoty vykazují vzrůstající trend po dobu dvou hodin nazpět (tj. 24 hodnot, data jsou vzorkována po pěti minutách). Získáme tak aktivační funkci pro rostoucí hrany.
-
 \begin{verbatim}
 if activation[i] > 2:
   for j in range(24):
     if activation[i-j] >= 2+0.2*j:
       activation[i] += 0.1*j
 \end{verbatim}
-
 Pro klesající hrany použijeme stejný postup, ale se záporným ohodnocením.
 
+\subsubsection{Spuštění}
+
+Detekce hran průběhu intersticiální glukózy se spustí voláním funkce:
+\begin{verbatim}
+threshold(df, th, weight)
+\end{verbatim}
+ze souboru \textbf{cho\_detection.py}, kdy \textit{df} je pandas dataframe modifikovaných dat (load\_data musí být spuštěno s parametry smooth='savgol', derivation='difference', norm=''), \textit{th} je pole threshold a \textit{weight} je pole vah o stejné délce. Funkce vrací hodnoty aktivační funkce.
+
+\subsubsection{Výsledky}
 V grafu na obrázku \ref{fig:hrany} je ukázka detekce hran. Červeně je aktivace vzestupné hrany, modře aktivace sestupné hrany posunuté. Počátek sestupné hrany je posunut na úrověň poslední hodnoty aktivace vzestupné hrany. Mezi vzestupnou a sestupnou hranou je vždy několik hodnot, kdy byla hladina intersticiální glukózy vyrovnaná.
 
-\begin{table}[H]
-\caption{Vyhlazená data intersticiální glukózy}
-\label{fig:savgol}
+\begin{figure}[H]
+\caption{Detekované hrany průběhu intersticiální glukózy}
+\label{fig:hrany}
 \centering
-\includegraphics[width=1\textwidth]{img/cho/savgol.png}
-\end{table}
+\includegraphics[width=1\textwidth]{img/cho/hrany.png}
+\end{figure}
 
 Jídlo je detekováno, pakliže aktivační funkce vzestupné hrany je větší než zvolený threshold. Nízký threshold detekuje většinu jídel, ale také může detekovat výkyvy nesouvisející s příjmem karbohydrátů. Naopak vysoce zvolený threshold nebude detekovat menší jídla. Řešením je použití více thresholdů pro stanovení pravděpodobnosti jídla.
+
+\textbf{//TODO tabulka vysledku}
+
+Výsoký počet falešně pozitivních výsledků se mi částečně podařilo redukovat při implementaci do SmartCGMS.
