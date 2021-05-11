@@ -14,7 +14,7 @@ Aplikace je napsaná v jazyce C++ a je zkompilována pro x86-64 systémy MS Wind
 \textit{Zdroj: SmartCGMS as an Environment for an Insulin-Pump  Development with FDA-Accepted In-Silico Pre-Clinical Trials \citep{cgms.ubl}}
 \end{figure}
 
-\textbf{Model} umožňuje načtení více hodnot a jejich následné zpracování dle nastavených parametrů. Narozdíl od filtru model zpracovává události dávkově. Je tak vhodný pokud potřebujeme pracovat s více signály najednou nebo predikovat hodnotu do budoucna. SmartCGMS obsahuje modely dynamiky glukózy Bergmanův model vylepšený Hovorkovo modelem a Koutného difúzním modelem, SimGlucose s vynulovaným parametrem xi u UVA/Padova S2013, T1DMS a DMMS.R \citep{cgms.web}. Výpočet modelu je spušten filtrem \textit{Signal Generator} nebo filtrem \textit{Calculated Signal}, pokud chceme  parametry modelu dynamicky spočítat pomocí solveru.
+\textbf{Model} umožňuje načtení více hodnot a jejich následné zpracování dle nastavených parametrů. Narozdíl od filtru model zpracovává události dávkově. Je tak vhodný pokud potřebujeme pracovat s více signály najednou nebo predikovat hodnoty do budoucna. SmartCGMS obsahuje modely dynamiky glukózy Bergmanův model vylepšený Hovorkovo modelem a Koutného difúzním modelem, SimGlucose s vynulovaným parametrem xi u UVA/Padova S2013, T1DMS a DMMS.R \citep{cgms.web}. Výpočet modelu je spušten filtrem \textit{Signal Generator} nebo filtrem \textit{Calculated Signal}, pokud chceme  parametry modelu dynamicky spočítat pomocí solveru.
 
 \textbf{Metrika} je druh filtru, který umožňuje spočítat metriky jako je například střední chyba, směrodatná odchylka nebo plocha pod křivkou \citep{cgms.koutny}.
 

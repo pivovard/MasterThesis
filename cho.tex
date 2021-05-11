@@ -90,16 +90,14 @@ load_data_all(patientIDs, from_file, fill_missing, smooth,
 pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transponovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření (\texttt{''} nenahrazuje se, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr \textit{derivation} určuje způsob výpočtu derivací ('akima' pro derivace Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet diference). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace směrodatnou odchylkou na interval <-1;1>, 'minmax' standardizace rozpětím na interval <0;1>). Parametr \textit{verbose} je pro vypsání průběhu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textbf{patientID-modified.csv}.
 
 
-\section{Long short-term memory}
+\section{Rekurentní neuronové sítě}
 \label{ch:lstm}
-
-\subsection{Teorie}
 
 Rekurentní neuronové sítě jsou vhodné pro predikci sekvenčních dat (například časové řady). Vyznačují se tím, že si předávají informaci o předchozím stavu (aktivaci skryté vrstvy):
 
 $H_{t}=\sigma (W_{h}H_{t-1}+W_{x}X_{t}+b)$
 
-\noindent kde $W$ jsou váhy a $b$ je bias. Neurony, které takto uchovávají svůj stav, se nazývají buňky. Riziko RNN spočívá v náchylnosti vzniku jevu označovaného jako mizející nebo explodující gradient vznikajícího při zpětné propagaci, kdy hodnoty exponenciálně klesají nebo rostou. To je z důvodu, že se chyba propaguje přes všechny iterace. Tento problém eliminuje long short-term memory neuronová síť nebo GRU.
+\noindent kde $W$ jsou váhy a $b$ je bias. Neurony, které takto uchovávají svůj stav, se nazývají buňky. Riziko RNN spočívá v náchylnosti vzniku jevu označovaného jako mizející nebo explodující gradient vznikajícího při zpětné propagaci, kdy hodnoty exponenciálně klesají nebo rostou. To je z důvodu, že se chyba propaguje přes všechny iterace. Tento problém eliminuje long short-term memory nebo gated recurrent unit neuronová síť.
 
 \begin{figure}[H]
 \caption{Rekurentní neuronová síť}
@@ -108,6 +106,8 @@ $H_{t}=\sigma (W_{h}H_{t-1}+W_{x}X_{t}+b)$
 \includegraphics[width=0.7\textwidth]{img/cho/rnn.jpeg}\\
 \textit{Zdroj: https://medium.com/}
 \end{figure}
+
+\subsection{Long short-term memory}
 
 Long short-term memory neuronová síť (LSTM) je speciální případ rekurentní neuronové sítě. V každé iteraci si buňka uchovává dodatečnou informaci nazvanou \textit{memory}. 
 
@@ -118,7 +118,7 @@ $\bar{C}_{t}=tanh(X_{t} \otimes U_{c}+H_{t-1} \otimes W_{c})$\\\indent
 $I_{t}=\sigma(X_{t} \otimes U_{i}+H_{t-1} \otimes W_{i})$\\\indent
 $O_{t}=\sigma(X_{t} \otimes U_{u}+H_{t-1} \otimes W_{u})$
 
-\noindent kde $W$ a $U_{t}$ jsou váhové vektory. Následně se spočte \textit{memory} prvek $C_{t}$:
+\noindent kde $W$ a $U$ jsou váhové vektory. Následně se spočte \textit{memory} prvek $C_{t}$:
 
 $C_{t}=f_{t} \otimes C_{t-1} \oplus I_{t} \otimes \bar{C}_{t}$
 
@@ -136,18 +136,43 @@ Diagram LSTM buňky je na obrázku \ref{fig:lstm_cell}.
 \textit{Zdroj: https://medium.com/}
 \end{figure}
 
+\subsection{Gated recurrent unit}
+
+Gated recurrent unit neuronová síť (GRU) využívá Update gate $z_{t}$ a Reset gate $r_{t}$. Ty určují která informace bude propagována na výstup. Mohou tak vytěžit relevantní informace. Update a reset gate se spočte \citep{cho.gru}:
+
+$z_{t}=\sigma(W_{z}x_{t} + U_{z}h_{t-1})$\\\indent
+$r_{t}=\sigma(W_{r}x_{t} + U_{r}h_{t-1})$
+
+\noindent kde $W$ a $U$ jsou váhové vektory. Následně se spočte relevantí informace z předchozího stavu $\bar{h}_{t}$:
+
+$\bar{h}_{t}=tanh(W_{h}x_{t} + U_{h}(r_{t} \otimes h_{t-1}))$
+
+\noindent a výstupní stav $h_{t}$:
+
+$h_{t}=z_{t} \otimes h_{t-1} + (1-z_{t}) \otimes \bar{h}_{t}$
+
+Diagram GRU buňky je na obrázku \ref{fig:gru_cell}.
+
+\begin{figure}[H]
+\caption{GRU buňka}
+\label{fig:gru_cell}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/gru_cell.jpg}
+\textit{Zdroj: https://www.pluralsight.com/}
+\end{figure}
+
 \subsection{Model}
 
 Pro detekci karbohydrátů jsem sestavil sekvenční keras\footnote{Keras je nadstavba nad knihovnou TensorFlow pro neuronové sítě} model se čtyřmi vrstvami:
 \begin{itemize}
 \setlength\itemsep{0em}
-\item Obousměrná LSTM(128)
+\item Obousměrná LSTM nebo GRU
 \item Dropout(0,5)
 \item Dense(128)
 \item Dense(1)
 \end{itemize}
 
-LSTM vrstva má 128 neuronů. Vstupem vrstvy je časové okno N vstupních prvků velikosti W. Tvar vstupních dat je WxN:
+První vrstvou je rekurentní neuronová síť. Ta může být buď LSTM nebo GRU. Tato vrstva má 128 neuronů a dropout 0,2. Vstupem vrstvy je časové okno N vstupních prvků velikosti W. Tvar vstupních dat je WxN:
 
 $\begin{bmatrix}
 X^{1}_{1} & X^{2}_{1} & ... & X^{N}_{1}\\
@@ -164,9 +189,9 @@ Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredErro
 
 Trénování neuronové sítě se spustí voláním funkce:
 \begin{verbatim}
-lstm(df, headers, label, width, epochs)
+lstm(df, headers, label, type, width, epochs)
 \end{verbatim}
-ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvů sloupců vstupních dat, \textit{label} je predikovaná třída, \textit{width} je velikost okna a \textit{epochs} je počet epoch, kolikrát má proběhnout trénovací cyklus.
+ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvů sloupců vstupních dat, \textit{label} je predikovaná třída, \textit{type} je LSTM nebo GRU, \textit{width} je velikost okna a \textit{epochs} je počet epoch, kolikrát má proběhnout trénovací cyklus.
 
 Natrénovaný model se uloží do souboru \textbf{keras\_model.h5}.
 
@@ -176,7 +201,7 @@ Pro detekci karbohydrátů jsem jako vstupní prvky zvolil vyhlazená data inter
 
 Výstupem jsou predikované odhady karbohydrátů. Pro detekci příjmu karbohydrátů určíme threshold. Pakliže množství karbohydrátů predikovaných neuronovou sítí je větší než tento threshold, je detekováno jídlo. Threshold je pro každého pacienta jiný.
 
-\textbf{//TODO tabulka vysledku}
+\textbf{//TODO}
 
 \section{Lineární a kvadratická diskriminační analýza}
 \label{ch:lda_qda}
@@ -219,7 +244,7 @@ ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modif
 
 \subsubsection{Výsledky}
 
-\textbf{//TODO tabulka vysledku}
+\textbf{//TODO}
 
 \subsection{Časové okno}
 
@@ -241,7 +266,7 @@ ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modif
 
 \subsubsection{Výsledky}
 
-\textbf{//TODO tabulka vysledku}
+\textbf{//TODO}
 
 
 \section{Detekce hran průběhu intersticiální glukózy}
@@ -297,13 +322,63 @@ V grafu na obrázku \ref{fig:hrany} je ukázka detekce hran. Červeně je aktiva
 
 Jídlo je detekováno, pakliže aktivační funkce vzestupné hrany je větší než zvolený threshold. Nízký threshold detekuje většinu jídel, ale také může detekovat výkyvy nesouvisející s příjmem karbohydrátů. Naopak vysoce zvolený threshold nebude detekovat menší jídla. Řešením je použití více thresholdů pro stanovení pravděpodobnosti jídla.
 
-\textbf{//TODO tabulka vysledku}
+\textbf{//TODO}
 
-Výsoký počet falešně pozitivních výsledků se mi částečně podařilo redukovat při implementaci do SmartCGMS.
+%Výsoký počet falešně pozitivních výsledků se mi částečně podařilo redukovat při implementaci do SmartCGMS.
 
 
 \section{Implementace do SmartCGMS}
 
-\textbf{//TODO}
+Do SmartCGMS jsem implementoval filtr pro detekci karbohydrátů pomocí detekce hran průběhu intersticiální glukózy a pomocí rekurentních neuronových sítí. Dále bylo potřeba implementoval Savitzky-Golay filtr pro vyhlazení dat a evaluační filtr. Vytvořené filtry jsou zkompilovány do knihovny \textbf{cho\_detection.dll}.
 
-Nově vytvářený filtr implementuje rozhraní \textit{scgms::IFilter} a \textit{refcnt::IReferenced}. Při vytvoření instance filtru se volá metoda \textit{Configure}, která slouží pro nastavení filtru (typicky přečtení a nastavení konfiguračních parametrů). Metoda \textit{Execute} je volána pokaždé, když přijde signál od předchozího filtru. Zpravidla se původní událost posílá dalšímu filtru. Současně se musí zaregistrovat descriptor nového filtru, který definuje id filtru, název a konfigurační parametry, a případně i descriptor nového signálu. Vytvořená dynamická knihovna musí exportovat C funkce \textit{do\_create\_filter}, \textit{do\_get\_filter\_descriptors} a\\ \textit{do\_get\_signal\_descriptors}.
+Každý nově vytvářený filtr implementuje rozhraní \textit{scgms::IFilter} a \textit{refcnt::IReferenced}. Při vytvoření instance filtru se volá metoda \textit{Configure}, která slouží pro nastavení filtru (typicky přečtení a nastavení konfiguračních parametrů). Metoda \textit{Execute} je volána pokaždé, když přijde signál od předchozího filtru. Tato metoda vykonává požadovanou funkcionalitu. Původní událost se na závěr zpravidla posílá dalšímu filtru. Současně se musí zaregistrovat descriptor nového filtru, který definuje id filtru, název a konfigurační parametry, a případně i descriptor nového signálu. Vytvořená dynamická knihovna musí exportovat C funkce \textit{do\_create\_filter}, \textit{do\_get\_filter\_descriptors} a \textit{do\_get\_signal\_descriptors}.
+
+Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, které umožňuje vkládání prvků z obou stran i indexaci. konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvků se odebere prvek z druhého konce seznamu.
+
+\textbf{Savitzky-Golay} filtr počítá vyhlazená data intersticiální glukózy. Výstupem je \textbf{IST smoothed} signál.
+
+\textbf{CHO detection} filtr počítá aktivační funkci a detekci karbohydrátů. To je implementováno rekurentní neuronovou sítí nebo detekcí hran průběhu intersticiální glukózy. Filtr posílá dva signály. \textbf{Activation} signál je výstup použitého algoritmu a \textbf{CHO probability} udávající detekovaný příjem (1 - nižší pravděpodobnost, 2 - vyšší pravděpodobnost).
+
+Rekurentní neuronová síť využívá natrénovaného keras modelu. Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}. Model je nutné konvertovat pomocí skriptu \textit{keras\_export/convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. Příklad konfigurace s GRU je v konfiguračním souboru \textit{setup\_gru.ini}.
+ 
+V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \textit{setup\_th.ini}.
+
+\textbf{Evaluate} filtr vyhodnocuje úspěšnost detekce. Pravdivě pozitivní (TP) jsou hodnoty, kdy je jídlo detekováno (hodnota detekce alespoň 1) do dvou hodin od jeho zadání pacientem. Pokud je hodnota detekce 2, je jídlo bráno jako potvrzeno. Pakliže jídlo není detekováno do dvou hodin od zadání, je výsledek falešně negativní (FN). V případě detekce hodnoty 2, kdy jídlo není zadané, výsledek je falešně pozitvní (FP). Zároveň je počítáno zpoždění detekce od zadání jídla pacientem.
+
+Jelikož v datech nemusí být některá jídla zadaná, statistika každého dne se započítá pouze tehdy, kdy byly zadány alespoň 3 jídla.
+
+\subsubsection{Výsledky}
+
+Algoritmy byly testovány na datech jedenácti pacientů. Výsledky pro jednotlivé pacienty jsou v souboru \textit{results.txt}. V tabulce \ref{tab:results} jsou souhrnné výsledky.
+
+\begin{table}[H]
+\caption{Výsledky}
+\label{tab:results}
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline 
+& \textbf{Detekce hran} & \textbf{Detekce hran (+GRU)} & \textbf{ GRU }\\
+\hline 
+\hline 
+Jídel & 340 &  &  \\\hline
+Úspěšnost & 85 \% &  &  \\\hline
+TP & 289 &  &  \\\hline
+TP/pacient & 26,27 &  &  \\\hline
+TP potvrzeno & 167 &  &  \\\hline
+Potvrzeno & 57,8 \% &  &  \\\hline
+FN & 45 &  &  \\\hline
+FN/pacient & 4,09 &  &  \\\hline
+FP & 112 &  &  \\\hline
+FP/pacient & 10,18 &  &  \\\hline
+Zpoždění* & 27,54 &  &  \\
+\hline
+\end{tabular}
+\begin{flushleft}
+* průměrná doba detekce karbohydrátů od příjetí jídla v minutách\\
+TP - true positive\\
+FN - false negative\\
+FP - false positive\\
+\end{flushleft}
+\end{table}
+
+Průměrná úspěšnost detekce jídla je 85 \% s průměrným zpožděním 27,54 minut. Všechny algoritmy vykazují vysoký počet falešně pozitivních výsledků. To může být dáno častými výkyvy glukózy u pacienta nebo tím, že pacient jídlo nezadal, nebo ho zadal pozdě.
