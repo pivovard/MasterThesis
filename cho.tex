@@ -71,23 +71,23 @@ Script pro transponaci dat se spustí zavoláním funkce:
 \begin{verbatim}
 load_log(patientID)
 \end{verbatim}
-ze souboru \textbf{load\_log.py}, kdy \textit{patientID} je ID pacienta. Logy musí být umístěny v adresáři data/. Pro spuštění transponace dat z více logů se zavolá funkce:
+ze souboru \texttt{load\_log.py}, kdy \textit{patientID} je ID pacienta. Logy musí být umístěny v adresáři data/. Pro spuštění transponace dat z více logů se zavolá funkce:
 \begin{verbatim}
 load_log_all(patientIDs)
 \end{verbatim}
-kdy \textit{patientIDs} je pole ID logů, které chceme transponovat. Transponovaná data jsou uložena do .csv souboru \textbf{patientID-transposed.csv}.
+kdy \textit{patientIDs} je pole ID logů, které chceme transponovat. Transponovaná data jsou uložena do .csv souboru \textit{patientID-transposed.csv}.
 
 Načtení a modifikace transponovaných dat se spustí voláním:
 \begin{verbatim}
 load_data(patientID, from_file, fill_missing, smooth,
            derivation, norm, verbose, graphs, analyze)
 \end{verbatim}
-ze souboru \textbf{load\_data.py}, potažmo
+ze souboru \texttt{load\_data.py}, potažmo
 \begin{verbatim}
 load_data_all(patientIDs, from_file, fill_missing, smooth,
                 derivation, norm, verbose, graphs, analyze)
 \end{verbatim}
-pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transponovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření (\texttt{''} nenahrazuje se, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr \textit{derivation} určuje způsob výpočtu derivací ('akima' pro derivace Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet diference). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace směrodatnou odchylkou na interval <-1;1>, 'minmax' standardizace rozpětím na interval <0;1>). Parametr \textit{verbose} je pro vypsání průběhu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textbf{patientID-modified.csv}.
+pro načtení několika souborů. \textit{PatientID} je ID pacienta, \textit{from\_file} určuje zda se načtou již modifikovaná data nebo se spustí úprava transponovaných dat z logu. Parametr \textit{fill\_missing} určuje zda se mají nahradit chybějící hodnoty měření (\texttt{''} nenahrazuje se, 'akima' pro interpolaci Akima spline nebo 'mean' pro průměrnou hodnotu). Parametr \textit{smooth} určuje způsob filtrace ('savgol' pro Savitzky-Golay filter). Parametr \textit{derivation} určuje způsob výpočtu derivací ('akima' pro derivace Akima spline, 'gradient' pro numpy gradient, 'manual' pro výpočet diference). Parametr \textit{norm} říká, zda chceme data normalizovat ('std' normalizace směrodatnou odchylkou na interval <-1;1>, 'minmax' standardizace rozpětím na interval <0;1>). Parametr \textit{verbose} je pro vypsání průběhu zpracování dat, \textit{graph} zobrazí modifikovaná data v grafech a \textit{analyze} spustí analýzu dat z knihovny \textit{sweetviz}. Modifikovaná data jsou uložena do .csv souboru \textit{patientID-modified.csv}.
 
 
 \section{Rekurentní neuronové sítě}
@@ -181,7 +181,7 @@ X^{1}_{2} & X^{2}_{2} & ... & X^{N}_{2}\\
 X^{1}_{W} & X^{2}_{W} & ... & X^{N}_{W}
 \end{bmatrix}$
 
-Dropout vrstva s \textit{rate=0,5} náhodně nastaví některé vstupy na nulu v poměru 0,5. Nevynulované vstupy jsou škálovány 1/(1-rate), takže součet všech vstupů je nezměněn. To zabrání přetrénování neuronové sítě. Droupout vrstva je aplikována pouze při trénování sítě. První Dense vrstva (propojení neuronů formou každý s každým) má 128 neuronů, aktivační funkce je \textit{relu}. Druhá Dense vrstva s jedním neuronem je výstupní.
+Dropout vrstva s \textit{rate=0,2} náhodně nastaví některé vstupy na nulu v poměru 0,2. Nevynulované vstupy jsou škálovány 1/(1-rate), takže součet všech vstupů je nezměněn. To zabrání přetrénování neuronové sítě. Droupout vrstva je aplikována pouze při trénování sítě. První Dense vrstva (propojení neuronů formou každý s každým) má 128 neuronů, aktivační funkce je \textit{relu}. Druhá Dense vrstva s jedním neuronem je výstupní.
 
 Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. Z datasetu je 80 \% dat použito pro trénování a 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají.
 
@@ -191,9 +191,9 @@ Trénování neuronové sítě se spustí voláním funkce:
 \begin{verbatim}
 lstm(df, headers, label, type, width, epochs)
 \end{verbatim}
-ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvů sloupců vstupních dat, \textit{label} je predikovaná třída, \textit{type} je LSTM nebo GRU, \textit{width} je velikost okna a \textit{epochs} je počet epoch, kolikrát má proběhnout trénovací cyklus.
+ze souboru \texttt{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvů sloupců vstupních dat, \textit{label} je predikovaná třída, \textit{type} je LSTM nebo GRU, \textit{width} je velikost okna a \textit{epochs} je počet epoch, kolikrát má proběhnout trénovací cyklus.
 
-Natrénovaný model se uloží do souboru \textbf{keras\_model.h5}.
+Natrénovaný model se uloží do souboru \texttt{model/[patientID]\_keras\_model.h5} a následně se exportuje do souboru \texttt{model/[patientID]\_fdeep\_model.h5}, který používá C++ knihovna frugally-deep (viz kapitola \ref{ch:implementace_scgms}).
 
 \subsubsection{Výsledky}
 
@@ -230,9 +230,14 @@ Vstupem diskriminační analýzy může být buď množina prvků pro daný čas
 
 \subsection{Množina prvků}
 
-Nejčastějším vstupem diskriminační analýzy je množina charakteristických prvků $X_{i}$. V tomto případě se diskriminační analýza snaží rozdělit prostor tak, aby odlišila jednotlivé třídy (viz obrázek \ref{}).
+Nejčastějším vstupem diskriminační analýzy je množina charakteristických prvků $X_{i}$. V tomto případě se diskriminační analýza snaží rozdělit prostor tak, aby odlišila jednotlivé třídy (viz obrázek \ref{fig:lda}).
 
-\textbf{//TODO obrazek}
+\begin{figure}[H]
+\caption{Rozdělení prostoru lineární diskriminační analýzou dvou prvků}
+\label{fig:lda}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/lda2.png}
+\end{figure}
 
 \subsubsection{Spuštění}
 
@@ -240,7 +245,7 @@ Trénování LDA a QDA pro množinu prvků se spustí voláním funkce:
 \begin{verbatim}
 lda(df, headers)
 \end{verbatim}
-ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvu sloupců vstupních dat.
+ze souboru \texttt{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{headers} je pole názvu sloupců vstupních dat.
 
 \subsubsection{Výsledky}
 
@@ -262,7 +267,7 @@ Trénování LDA a QDA pro časové okno se spustí voláním funkce:
 \begin{verbatim}
 lda_window(df, header, width)
 \end{verbatim}
-ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{header} je název sloupce vstupních dat a \textit{width} je velikost okna.
+ze souboru \texttt{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat, \textit{header} je název sloupce vstupních dat a \textit{width} je velikost okna.
 
 \subsubsection{Výsledky}
 
@@ -308,7 +313,7 @@ Detekce hran průběhu intersticiální glukózy se spustí voláním funkce:
 \begin{verbatim}
 threshold(df, th, weight)
 \end{verbatim}
-ze souboru \textbf{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat (load\_data musí být spuštěno s parametry smooth='savgol', derivation='difference', norm=''), \textit{th} je pole thresholdů a \textit{weight} je pole vah o stejné délce. Funkce vrací hodnoty aktivační funkce.
+ze souboru \texttt{cho\_detection.py}, kde \textit{df} je pandas dataframe modifikovaných dat (load\_data musí být spuštěno s parametry smooth='savgol', derivation='difference', norm=''), \textit{th} je pole thresholdů a \textit{weight} je pole vah o stejné délce. Funkce vrací hodnoty aktivační funkce.
 
 \subsubsection{Výsledky}
 V grafu na obrázku \ref{fig:hrany} je ukázka detekce hran. Červeně je aktivace vzestupné hrany, modře aktivace sestupné hrany posunuté. Počátek sestupné hrany je posunut na úrověň poslední hodnoty aktivace vzestupné hrany. Mezi vzestupnou a sestupnou hranou je vždy několik hodnot, kdy byla hladina intersticiální glukózy vyrovnaná.
@@ -328,10 +333,13 @@ Jídlo je detekováno, pakliže aktivační funkce vzestupné hrany je větší 
 
 
 \section{Implementace do SmartCGMS}
+\label{ch:implementace_scgms}
 
-Do SmartCGMS jsem implementoval filtr pro detekci karbohydrátů pomocí detekce hran průběhu intersticiální glukózy a pomocí rekurentních neuronových sítí. Dále bylo potřeba implementoval Savitzky-Golay filtr pro vyhlazení dat a evaluační filtr. Vytvořené filtry jsou zkompilovány do knihovny \textbf{cho\_detection.dll}.
+Do SmartCGMS jsem implementoval filtr pro detekci karbohydrátů pomocí detekce hran průběhu intersticiální glukózy a pomocí rekurentních neuronových sítí. Dále bylo potřeba implementoval Savitzky-Golay filtr pro vyhlazení dat a evaluační filtr. Vytvořené filtry jsou zkompilovány do knihovny \texttt{cho\_detection.dll}.
 
-Každý nově vytvářený filtr implementuje rozhraní \textit{scgms::IFilter} a \textit{refcnt::IReferenced}. Při vytvoření instance filtru se volá metoda \textit{Configure}, která slouží pro nastavení filtru (typicky přečtení a nastavení konfiguračních parametrů). Metoda \textit{Execute} je volána pokaždé, když přijde signál od předchozího filtru. Tato metoda vykonává požadovanou funkcionalitu. Původní událost se na závěr zpravidla posílá dalšímu filtru. Současně se musí zaregistrovat descriptor nového filtru, který definuje id filtru, název a konfigurační parametry, a případně i descriptor nového signálu. Vytvořená dynamická knihovna musí exportovat C funkce \textit{do\_create\_filter}, \textit{do\_get\_filter\_descriptors} a \textit{do\_get\_signal\_descriptors}.
+Filtry implementují rozhraní \textit{scgms::IFilter} a \textit{refcnt::IReferenced}. Při vytvoření instance filtru se volá metoda \textit{Configure}, která slouží pro nastavení filtru (typicky přečtení a nastavení konfiguračních parametrů). Metoda \textit{Execute} je volána pokaždé, když přijde signál od předchozího filtru. Tato metoda vykonává požadovanou funkcionalitu. Původní událost se na závěr zpravidla posílá dalšímu filtru. Současně se musí zaregistrovat descriptor nového filtru, který definuje ID filtru, název a konfigurační parametry, a případně i descriptor nového signálu. Vytvořená dynamická knihovna musí exportovat funkce \textit{do\_create\_filter}, \textit{do\_get\_filter\_descriptors} a \textit{do\_get\_signal\_descriptors}.
+
+Data mohou být rozdělena do časových segmentů dle měření. V takovém případě filtry pracují s každým segmentem zvlášť. Rozdělení do segmentů je realizováno pomocí mapy, kdy klíčem je ID segmentu.
 
 Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, které umožňuje vkládání prvků z obou stran i indexaci. konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvků se odebere prvek z druhého konce seznamu.
 
@@ -339,13 +347,11 @@ Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto 
 
 \textbf{CHO detection} filtr počítá aktivační funkci a detekci karbohydrátů. To je implementováno rekurentní neuronovou sítí nebo detekcí hran průběhu intersticiální glukózy. Filtr posílá dva signály. \textbf{Activation} signál je výstup použitého algoritmu a \textbf{CHO probability} udávající detekovaný příjem (1 - nižší pravděpodobnost, 2 - vyšší pravděpodobnost).
 
-Rekurentní neuronová síť využívá natrénovaného keras modelu. Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}. Model je nutné konvertovat pomocí skriptu \textit{keras\_export/convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. Příklad konfigurace s GRU je v konfiguračním souboru \textit{setup\_gru.ini}.
+Rekurentní neuronová síť využívá natrénovaného keras modelu. Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}. Model je nutné konvertovat pomocí skriptu \texttt{keras\_export/convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. Příklad konfigurace s GRU je v konfiguračním souboru \texttt{setup\_gru.ini} (viz příloha B).
  
-V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \textit{setup\_th.ini}.
+V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \texttt{setup\_th.ini} (viz příloha B).
 
-\textbf{Evaluate} filtr vyhodnocuje úspěšnost detekce. Pravdivě pozitivní (TP) jsou hodnoty, kdy je jídlo detekováno (hodnota detekce alespoň 1) do dvou hodin od jeho zadání pacientem. Pokud je hodnota detekce 2, je jídlo bráno jako potvrzeno. Pakliže jídlo není detekováno do dvou hodin od zadání, je výsledek falešně negativní (FN). V případě detekce hodnoty 2, kdy jídlo není zadané, výsledek je falešně pozitvní (FP). Zároveň je počítáno zpoždění detekce od zadání jídla pacientem.
-
-Jelikož v datech nemusí být některá jídla zadaná, statistika každého dne se započítá pouze tehdy, kdy byly zadány alespoň 3 jídla.
+\textbf{Evaluate} filtr vyhodnocuje úspěšnost detekce. Pravdivě pozitivní (TP) jsou hodnoty, kdy je jídlo detekováno (hodnota detekce alespoň 1) do dvou hodin od jeho zadání pacientem. Pokud je hodnota detekce 2, je jídlo bráno jako potvrzeno. Pakliže jídlo není detekováno do dvou hodin od zadání, je výsledek falešně negativní (FN). V případě detekce hodnoty 2, kdy jídlo není zadané, výsledek je falešně pozitvní (FP). Zároveň je počítáno zpoždění detekce od zadání jídla pacientem. Jelikož v datech nemusí být některá jídla zadaná, statistika každého dne se započítá pouze tehdy, kdy byly zadány alespoň 3 jídla. Evaluate filtr neřeší časové segmenty.
 
 \subsubsection{Výsledky}
 
@@ -354,7 +360,6 @@ Algoritmy byly testovány na datech jedenácti pacientů. Výsledky pro jednotli
 \begin{table}[H]
 \caption{Výsledky}
 \label{tab:results}
-\centering
 \begin{tabular}{|l|c|c|c|}
 \hline 
 & \textbf{Detekce hran} & \textbf{Detekce hran (+GRU)} & \textbf{ GRU }\\

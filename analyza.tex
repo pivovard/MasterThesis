@@ -338,33 +338,33 @@ V tabulce \ref{tab:res} je srovnání jednotlivých metod pro detekci karbohydr�
 \begin{table}[H]
 \caption{Porovnání jednotlivých metod}
 \label{tab:res}
-\centering
+\hskip-1.0cm
 \begin{tabular}{|l|l|c|c|c|c|}
 \hline 
-\textbf{Studie} & \textbf{Zpoždění *} & \textbf{TP} & \textbf{FN} & \textbf{TN} & \textbf{FP}\tabularnewline
+\textbf{Studie} & \textbf{Zpoždění*} & \textbf{TP} & \textbf{FN} & \textbf{TN} & \textbf{FP}\tabularnewline
 \hline 
 \hline 
-\ref{ch:turksoy} & - & - & - & - & -\tabularnewline
+\ref{ch:turksoy} \citet{Analyza.Turksoy} & - & - & - & - & -\tabularnewline
 \hline 
-\ref{ch:CrossCovariance} & 25-40 min & 91.6\%{**} & - & - & -\tabularnewline
+\ref{ch:CrossCovariance} \citet{Analyza.CrossCovariance} & 25-40 & 91.6\%{**} & - & - & -\tabularnewline
 \hline 
-\ref{ch:diff} & - & - & - & 11 & 0\tabularnewline
+\ref{ch:diff} \citet{Analyza.Diff} & - & - & - & 11 & 0\tabularnewline
 \hline 
-\ref{ch:nekonzistence} & 30-50 min & 93.23\% & 6.77\% & - & 4.17\%\tabularnewline
+\ref{ch:nekonzistence} \citet{Analyza.Nekonzistence} & 30-50 & 93.23\% & 6.77\% & - & 4.17\%\tabularnewline
 \hline
-\ref{ch:horizon} & 20 min & 88.5\% & 11.5\% & - & 2.6FP/den\tabularnewline
+\ref{ch:horizon} \citet{Analyza.MovingHorizon} & 20 & 88.5\% & 11.5\% & - & 2.6FP/den\tabularnewline
 \hline 
-\ref{ch:forest} & 26-39 min & 90\% & 10\% & - & 11.47\%\tabularnewline
+\ref{ch:forest} \citet{Analyza.ExtendedIsolationForest} & 26-39 & 90\% & 10\% & - & 11.47\%\tabularnewline
 \hline 
-\ref{ch:thrashold} & 31 min (avg.) & 656 (82\%) & 144 (18\%) & - & 54 (6.75\%)\tabularnewline
+\ref{ch:thrashold} \citet{Analyza.Thresholds} & 31 (avg.) & 656 (82\%) & 144 (18\%) & - & 54 (6.75\%)\tabularnewline
 \hline 
-\ref{ch:wavelet} & 30 min (avg.) & 87\% & 13\% & - & 21\%\tabularnewline
+\ref{ch:wavelet} \citet{Analyza.WaveletEst} & 30 (avg.) & 87\% & 13\% & - & 21\%\tabularnewline
 \hline 
-\ref{ch:lda} Ra & 18.59 min & 92\% & 8\% & - & 1.5FP/den\tabularnewline
+\ref{ch:lda} Ra \citet{Analyza.LDA} & 18.59 & 92\% & 8\% & - & 1.5FP/den\tabularnewline
 \hline 
-\ref{ch:lda} CGM & 11.78 min & 90\% & 10\% & - & 1.37FP/den\tabularnewline
+\ref{ch:lda} CGM \citet{Analyza.LDA} & 11.78 & 90\% & 10\% & - & 1.37FP/den\tabularnewline
 \hline
-\ref{ch:neuronka} & 8 hodin & 0.39{***} & & & \tabularnewline
+\ref{ch:neuronka} \citet{Analyza.Neuronka} & 8 hodin & 0.39{***} & & & \tabularnewline
 \hline
 \end{tabular}
 \begin{flushleft}
