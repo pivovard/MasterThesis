@@ -1,1 +1,36 @@
 \chapter{Výsledky}
+
+Algoritmy byly testovány na datech jedenácti pacientů. Měření testovacích dat u každého pacienta probíhalo po dobu 10 - 11 dnů. V součtu pacienti zaznamenali 340 jídel za 109 dnů. Výsledky pro jednotlivé pacienty jsou v souboru \textit{results.txt}. V tabulce \ref{tab:results} jsou souhrnné výsledky detekce karbohydrátů.
+
+Pravdivě pozitivní (TP) jsou hodnoty, kdy je jídlo detekováno (hodnota detekce alespoň 1) do dvou hodin od jeho zadání pacientem. Pokud je hodnota detekce 2, je jídlo bráno jako potvrzeno. Pakliže jídlo není detekováno do dvou hodin od zadání, je výsledek falešně negativní (FN). V případě detekce hodnoty 2, kdy jídlo není zadané, výsledek je falešně pozitvní (FP). Zároveň je počítáno zpoždění detekce od zadání jídla pacientem. Jelikož v datech nemusí být některá jídla zadaná, statistika každého dne se započítá pouze tehdy, kdy byly zadány alespoň 3 jídla.
+
+\begin{table}[H]
+\caption{Výsledky}
+\label{tab:results}
+\begin{tabular}{|l|c|c|c|}
+\hline 
+& \textbf{Detekce hran} & \textbf{Detekce hran+GRU} & \textbf{ GRU }\\
+\hline 
+\hline 
+Jídel & 340 &  &  \\\hline
+Úspěšnost & 85 \% &  &  \\\hline
+TP & 289 &  &  \\\hline
+TP/pacient & 26,27 &  &  \\\hline
+TP potvrzeno & 167 &  &  \\\hline
+Potvrzeno & 57,8 \% &  &  \\\hline
+FN & 45 &  &  \\\hline
+FN/pacient & 4,09 &  &  \\\hline
+FP & 112 &  &  \\\hline
+FP/pacient & 10,18 &  &  \\\hline
+Zpoždění* & 27,54 &  &  \\
+\hline
+\end{tabular}
+\begin{flushleft}
+* průměrná doba detekce karbohydrátů od příjetí jídla v minutách\\
+TP - true positive\\
+FN - false negative\\
+FP - false positive\\
+\end{flushleft}
+\end{table}
+
+Průměrná úspěšnost detekce jídla je 85 \% s průměrným zpožděním 27,54 minut. Všechny algoritmy vykazují vysoký počet falešně pozitivních výsledků. To může být dáno častými výkyvy glukózy u pacienta nebo tím, že pacienti jídlo nezadávali poctivě, nebo ho zadali se zpožděním. Také prudké výkyvy koncentrace cukru v krvi spojené s jinou činností mouhou způsobit falešnou detekci. Zpoždění 27,54 minut je srovnatelné, nebo i lepší, než výsledky zkoumaných algoritmů v kapitole \ref{ch:analyzaCHO}.

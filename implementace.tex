@@ -1,1 +1,93 @@
 \chapter{Implementace}
+
+\section{Použité nástroje}
+
+Programovací jazyk při návrhu metod jsem zvolil Python, který se je vhodný pro analýzu dat, zvláště pak jeho knihovny NumPy, Pandas a SciPy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Dále jsem použil knihovny TensorFlow a Keras pro práci s neuronovými sítěmi.
+
+Implementace modulů do SmartCGMS je v jazyce C++. Použití Keras modelu neuronové sítě je za pomoci knihovny frugally-deep.
+
+\section{Dataset BGLP}
+
+Anonymizovaná data ze senzoru CGMS obsahují naměřené a zadané hodnoty:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Glukóza v krvi (BG)
+\item Intersticiální glukóza (IST)
+\item Bazální množství inzulinu
+\item Bolus inzulinu
+\item Příjem karbohydrátů (CHO)
+\item Fyzická aktivita
+\item Kvalita spánku
+\item Vodivost kůže
+\item Teplota kůže
+\item Teplota okolí
+\item Srdeční tep
+\item Počet kroků
+\item Akcelerace
+\end{itemize}
+
+Pokud je měřen srdeční tep a počet kroků, není data neobsahují údaje o akceleraci a naopak. CGMS senzor posílá data ve formě signálů, které mají strukturu:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Logical Clock
+\item Device Time
+\item Event Code
+\item Signal
+\item Info
+\item Segment Id
+\item Event Code Id
+\item Device Id
+\item Signal Id
+\end{itemize}
+
+Příklad signálů ze senzoru CGMS je v tabulce \ref{tab:cgms_data}. Informaci pro následnou detekci v sobě nesou sloupce Device Time (čas měření), Signal (typ signálu) a Info (hodnota).
+
+\begin{table}[H]
+\caption{Signály ze CGMS}
+\label{tab:cgms_data}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/cgms_data.png}
+\end{table}
+
+V grafech na obrázku \ref{fig:48h_dataset} jsou transformovaná data naměřená senzorem CGMS za 48 hodin. Na prvním grafu jsou hodnoty Intersticiální glukózy a její vyhlazení Savitzky-Golay filtrem. Druhý graf znázorňuje zadanou bazální dávku inzulinu, bolusy, příjem karbohydrátů a fyzickou aktivitu. Na posledním grafu jsou zbylé měřené hodnoty.
+
+\begin{figure}[H]
+\caption{Data ze CGMS}
+\label{fig:48h_dataset}
+\centering
+\includegraphics[width=1\textwidth]{img/cho/48h_dataset.png}
+\end{figure}
+
+
+\section{Filtr pro SmartCGMS}
+
+Algoritmy jsou do SmartCGMS implementovány v podobě filtrů. Ty implementují rozhraní \textit{scgms::IFilter} a \textit{refcnt::IReferenced}. Při vytvoření instance filtru se volá metoda \textit{Configure}, která slouží pro nastavení filtru (typicky přečtení a nastavení konfiguračních parametrů). Metoda \textit{Execute} je volána pokaždé, když přijde signál od předchozího filtru. Tato metoda vykonává požadovanou funkcionalitu. Původní událost se na závěr zpravidla posílá dalšímu filtru. Současně se musí zaregistrovat descriptor nového filtru, který definuje ID filtru, název a konfigurační parametry, a případně i descriptor nového signálu. Vytvořená dynamická knihovna musí exportovat funkce \textit{do\_create\_filter}, \textit{do\_get\_filter\_descriptors} a \textit{do\_get\_signal\_descriptors}.
+
+Data mohou být rozdělena do časových segmentů dle měření. V takovém případě filtry pracují s každým segmentem zvlášť. Rozdělení do segmentů je realizováno pomocí mapy, kdy klíčem je ID segmentu.
+
+Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, které umožňuje vkládání prvků z obou stran i indexaci. Konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvků se odebere prvek z druhého konce seznamu.
+
+Pro vyhlazení dat jsem implementoval \textbf{Savitzky-Golay} filtr. Tomuto filtru se nastavuje typ signálu, který má vyhladit, velikost okna a stupeň polynomu. Výstupem je \textbf{IST smoothed} signál.
+
+Pro vyhodnocení úspěšnosti detekce je implementován \textbf{Evaluate} filtr. Tento filtr neřeší časové segmenty. Nastavit lze zkoumaný a referenční signál, časové okno pro detekci, časové okno, kdy se započítává falešně pozitivní výsledek...
+
+\subsection{Detekce příjmu karbohydrátů}
+
+\textbf{CHO detection} filtr počítá aktivační funkci a detekci karbohydrátů. To je implementováno rekurentní neuronovou sítí nebo detekcí hran průběhu intersticiální glukózy tak jak je popsáno v kapitole \ref{ch:threshold}. Filtr posílá dva signály. \textbf{Activation} signál je výstup použitého algoritmu a \textbf{CHO probability} udávající detekovaný příjem (1 - nižší pravděpodobnost, 2 - vyšší pravděpodobnost).
+
+V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \texttt{setup\_th.ini} (viz příloha B). V případě detekce hran musí tomuto filtru předcházet Savitzky-Golay filtr pro vyhlazení dat intersticiální glukózy.
+
+\subsubsection{Rekurentní neuronová síť}
+
+Rekurentní neuronová síť využívá natrénovaného keras modelu.Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}.
+
+Před trénováním modelu je třeba data ve formě signálů transformovat. Sloupce Device Time, Signal a Info jsem extrahoval do dvourozměrné tabulky, kde řádky jsou čas měření a sloupce jednotlivé typy signálů. Jelikož různé typy signálu nejsou měřeny ve stejný okamžik, řádky jsem seskupil podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech. Data intersticiální glukózy jsem interpoloval Akima spline \citep{cho.akima}, z níž jsem získal chybějící hodnoty a derivace 1. 2. a 3. řádu.
+
+Model je natrénován individuálně pro každého pacienta. Vstupní data modelu jsou hodnoty intersticiální glukózy, jejich první derivace a čas signálu v minutách. Díky časovému údaji neuronová síť zahrne do predikce určité denní návyky pacienta. Časové okno je velikosti 24 (tj. 2 hodiny). Z datasetu je 80 \% dat použito pro trénování a 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají. Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. Neuronová síť je trénovaná ve 100 epochách. 
+
+
+
+Natrénovaný model je nutné konvertovat pomocí skriptu \texttt{keras\_export/ convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. Příklad konfigurace s GRU je v konfiguračním souboru \texttt{setup\_gru.ini} (viz příloha B).
+
+
+\subsection{Detekce fyzické aktivity}
