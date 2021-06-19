@@ -1,0 +1,9 @@
+ CHO count: 12 Accuracy detection: 0.166667, delay: 2.25, TP detected: 2, Accuracy confirmed: 0.166667, confirmation delay: 0, TP confirmed: 2, FN: 10, FP: 9
+ 
+CHO count: 46 Accuracy detection: 0.130435, delay: 5.41304, TP detected: 6, Accuracy confirmed: 0.130435, confirmation delay: 13.1667, TP confirmed: 6, FN: 40, FP: 33
+
+ CHO count: 46 Accuracy detection: 0.130435, delay: 5.41304, TP detected: 6, Accuracy confirmed: 0.130435, confirmation delay: 13.1667, TP confirmed: 6, FN: 40, FP: 23
+ 
+  CHO count: 11 Accuracy detection: 0.909091, delay: 2.81818, TP detected: 10, Accuracy confirmed: 0.909091, confirmation delay: 0.1, TP confirmed: 10, FN: 1, FP: 356
+  
+   CHO count: 11 Accuracy detection: 0.818182, delay: 2.63636, TP detected: 9, Accuracy confirmed: 0.818182, confirmation delay: 0.111111, TP confirmed: 9, FN: 2, FP: 346
