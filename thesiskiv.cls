@@ -102,11 +102,12 @@
   %
   % ASSIGNMENT PAGE
   %
-  \setcounter{page}{2}
-  \thispagestyle{empty}
-  \hbox{}\vfill
-  {\centering\Huge\bfseries Místo této strany bude\\ zadání práce.\par}
-  \vfill\vfill
+  %\setcounter{page}{2}
+  %\thispagestyle{empty}
+  %\hbox{}\vfill
+  %{\centering\Huge\bfseries Místo této strany bude\\ zadání práce.\par}
+  %\vfill\vfill
+  \includepdf[pages=-]{zadani.pdf}
   %
   % DECLARATION PAGE
   %
