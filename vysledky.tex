@@ -10,10 +10,15 @@ Je spočítaná citlivost detekce (TPR), neboli míra pravdivě pozitivních det
 
 Počet pravdivě negativních výsledků nelze spolehlivě určit, protože změny v měřených datech přetrvávají i po ukončení aktivity. Proto není ani možné spočítat specificitu.
 
-
 \section{Detekce karbohydrátů}
 
-Algoritmy detekce karbohydrátů byly testovány na datech jedenácti pacientů. Měření testovacích dat u každého pacienta probíhalo po dobu 10 - 11 dnů. V součtu pacienti zaznamenali 340 jídel za 109 dnů. Diabetičtí pacienti musí pravidelně jíst (uvádí se 5-6x denně). Proto se statistika z každého dne zaznamená byli-li zadány alespoň 3 jídla. V opačném případě je vysoká pravděpodobnost, pacient některé jídlo nezaznamenal, což by ovlivnilo výsledky.
+Algoritmy detekce karbohydrátů byly testovány na datech jedenácti pacientů. Měření testovacích dat u každého pacienta probíhalo po dobu 10 - 11 dnů. V součtu pacienti zaznamenali 340 jídel za 109 dnů. Diabetičtí pacienti musí pravidelně jíst (uvádí se 5-6x denně). Proto se statistika z každého dne zaznamená byly-li zadány alespoň 3 jídla. V opačném případě je vysoká pravděpodobnost, že pacient některé jídlo nezaznamenal, což by ovlivnilo výsledky. Příklad takových dat je na obrázku \ref{fig:no_cho}. Z grafu je patrné zvýšení koncentrace glukózy v době snídaně, oběda a večeře, ale zadané karbohydráty chybí.\enlargethispage{\baselineskip}
+
+\begin{figure}[H]
+\caption{Data bez zadaných CHO}
+\label{fig:no_cho}
+\includegraphics[width=1\textwidth]{img/vysledky/no_cho2.png}
+\end{figure}
 
 Testované algoritmy jsou detekce hran průběhu intersticiální glukózy, kdy potvrzení je nastaveným vyšším thresholdem nebo rekurentní neuronovou sítí, a samostatná GRU neuronová síť.
 
@@ -23,29 +28,24 @@ V tabulkách \ref{tab:vys:th} až \ref{tab:vys:thrnn} v příloze A jsou výsled
 \caption{Výsledky detekce karbohydrátů}
 \label{tab:res_cho}
 \includegraphics[width=1\textwidth]{img/vysledky/cho/cho.png}
-\begin{flushleft}
-* průměrná doba detekce karbohydrátů od příjetí jídla v minutách\\
-\begin{tabular}{ll}
-CHO & - počet zaznamenaných jídel\\
-TP & - pravdivě pozitivní\\
-FN & - falešně negativní\\
-FP & - falešně pozitivní\\
-TPR & - citlivost - míra pravdivě pozitivních\\
-PPV & - přesnost\\
-FNR & - míra falešně negativních výsledků \\
-FDR & - míra falešně pozitivních výsledků\\
-\end{tabular}
-\end{flushleft}
 \end{table}
 \vspace*{-7mm}
 
-Všechny formy detekce hran průběhu intersticiální glukózy dosahovali citlivosti nad 85 \%. Nejlepších výsledků dosahuje detekce hran s potvrzením GRU neuronovou sítí. U některých pacientů dosahovala citlivost až 95 \%. Tato metoda má i nejnižší počet falešně pozitivních detekcí. Naopak samostatná neuronová síť dosahovala úspěšné detekce jen kolem 50 \%.
+\noindent * průměrná doba detekce karbohydrátů od příjetí jídla v minutách\\
+\begin{tabular}{llll}
+CHO & - počet jídel & TPR & - citlivost - míra pravdivě pozitivních\\
+TP & - pravdivě pozitivní & PPV & - přesnost\\
+FN & - falešně negativní & FNR & - míra falešně negativních výsledků \\
+FP & - falešně pozitivní&FDR & - míra falešně pozitivních výsledků\\
+\end{tabular}\\
+
+Všechny formy detekce hran průběhu intersticiální glukózy dosahovaly citlivosti nad 85 \%. Nejlepších výsledků (89 \%) dosahuje detekce hran s potvrzením GRU neuronovou sítí. U některých pacientů dosahovala citlivost až 95 \%. Tato metoda má i nejnižší počet falešně pozitivních detekcí. Naopak samostatná neuronová síť dosahovala úspěšné detekce jen kolem 50 \%.
 
 Zpoždění v průměru 22 minut je srovnatelné, nebo i lepší, než výsledky zkoumaných algoritmů v kapitole \ref{ch:analyzaCHO}.
 
-Algoritmy vykazují značný počet falešně pozitivních detekcí. To může být dáno častými výkyvy glukózy u pacienta nebo tím, že pacienti jídlo nezadávali poctivě, nebo ho zadali se zpožděním. Také prudké výkyvy koncentrace cukru v krvi spojené s jinou činností mohou způsobit falešnou detekci.
+Algoritmy vykazují značný počet falešně pozitivních detekcí. V datech se vyskytují oblasti, kdy jídlo nebylo pacientem zaznamenáno, nebo bylo zaznamenané se zpožděním. Také prudké výkyvy koncentrace cukru v krvi spojené s jinou činností mohou způsobit falešnou detekci.
 
-V grafu na obrázku \ref{fig:res_cho} je porovnání jednotlivých metod.
+V grafu na obrázku \ref{fig:res_cho} je porovnání počtu pravdivě pozitivních, falešně negativních a falešně pozitivních detekcí  na jednoho pacienta.
 
 \begin{figure}[H]
 \caption{Porovnání metod detekce karbohydrátů}
@@ -56,9 +56,9 @@ V grafu na obrázku \ref{fig:res_cho} je porovnání jednotlivých metod.
 
 \section{Detekce fyzické aktivity}
 
-Pro detekci fyzické aktivity jsou použity hodnoty srdečního tepy, počtu kroků, akcelerace, elektrodermální aktivity a jejich kombinace. Thresholdy jsou různé pro každý ukazatel a pacienta. Threshold pro srdeční tep se pohybuje od 100 do 120 tepů za minutu, počet kroků od 12 do 45 za 5 minut, velikost akcelerace od 1,1 do 1,5 $m/s_{2}$ a elektrodermální aktivita od 1 do 15 siemensů.
+Pro detekci fyzické aktivity jsou použity hodnoty srdečního tepu, počtu kroků, akcelerace, elektrodermální aktivity a jejich kombinace. Thresholdy jsou různé pro každý ukazatel a pacienta. Threshold pro srdeční tep se pohybuje od 100 do 120 tepů za minutu, počet kroků od 12 do 45 za 5 minut, velikost akcelerace od 1,1 do 1,5 $m/s_{2}$ a elektrodermální aktivita od 1 do 15 siemensů.
 
-Pět pacientů mělo měřen srdeční tep, počet kroků a elektrodermální aktivitu. Čtyři pacienti měli měřenou akceleraci a elektrodermální aktivitu. Pro tři pacienty nejsou dostupná testovací data se zadanou fyzickou aktivitou, proto nebyly zařazeni do testů.
+Pět pacientů mělo měřen srdeční tep, počet kroků a elektrodermální aktivitu. Čtyři pacienti měli měřenou akceleraci a elektrodermální aktivitu. Pro tři pacienty nejsou dostupná testovací data se zadanou fyzickou aktivitou, proto nebyli zařazeni do testů.
 
 V tabulkách \ref{tab:vys:heart} až \ref{tab:vys:steps+} v příloze A jsou výsledky detekce u pacientů s měřeným srdečním tepem. V tabulkách \ref{tab:vys:acc} až \ref{tab:vys:acc+} jsou výsledky detekce u pacientů s měřenou akcelerací. V tabulkách jsou i velikosti nastavených thresholdů pro jednotlivé ukazatele. V tabulce \ref{tab:res_heart} jsou souhrnné výsledky pro srdeční tep a počet kroků, v tabulce \ref{tab:res_acc} pro akceleraci.
 
@@ -67,7 +67,7 @@ V tabulkách \ref{tab:vys:heart} až \ref{tab:vys:steps+} v příloze A jsou vý
 \label{tab:res_heart}
 \includegraphics[width=1\textwidth]{img/vysledky/pa/vysledky 1.png}
 \end{table}
-
+\vspace*{-5mm}
 \begin{table}[H]
 \caption{Výsledky detekce fyzické aktivity\\ - akcelerace, elektrodermální aktivita}
 \label{tab:res_acc}
@@ -76,11 +76,11 @@ V tabulkách \ref{tab:vys:heart} až \ref{tab:vys:steps+} v příloze A jsou vý
 
 Dobré citlivosti dosahovala detekce při použití srdečního tepu, kroků a akcelerace, přičemž akcelerace dosahovala citlivosti 94 \%. Nejnižší zpoždění mělo měření počtu kroků. Nejmenší citlivost má elektrodermální aktivita.
 
-Všechny algoritmy mají vysoký počet falešně pozitivních detekcí. To je dáno tím, že měřená data jsou ovlivněna mnoha faktory, které nemusí s intenzivní fyzickou aktivitou souviset. Může se také jednat o lehčí aktivitu, kterou pacient nezadal. Kombinací více ukazatelů se podařilo značně snížit počet falešně pozitivních detekcí. nejlépe pak vychází kombinace srdečního tepu a počtu kroků.
+Všechny algoritmy mají vysoký počet falešně pozitivních detekcí. To je dáno tím, že měřená data jsou ovlivněna mnoha faktory, které nemusí s intenzivní fyzickou aktivitou souviset. Může se také jednat o lehčí aktivitu, kterou pacient nezadal. Kombinací více ukazatelů se podařilo značně snížit počet falešně pozitivních detekcí. Nejlépe pak vychází kombinace srdečního tepu a počtu kroků.
 
 Detekce sestupné hrany neměla vliv na výsledky detekcí. Z toho vyplývá, že ve všech případech, kdy byla fyzická aktivita detekována hodnota intersticiální glukózy klesala.
 
-V grafech na obrázcích \ref{fig:res_heart} a \ref{fig:res_acc} je porovnání jednotlivých metod.
+V grafech na obrázcích \ref{fig:res_heart} a \ref{fig:res_acc} je porovnání počtu pravdivě pozitivních, falešně negativních a falešně pozitivních detekcí  na jednoho pacienta.
 
 \begin{figure}[H]
 \caption{Porovnání metod detekce fyzické aktivity\\ - srdeční tep, počet kroků, elektrodermální aktivita}

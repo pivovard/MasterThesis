@@ -37,17 +37,7 @@ Model definuje rychlost výskytu glukózy \textbf{Ra(t)} na základě množství
 
 Rychlost výskytu glukózy \textbf{Ra(t)} je použita pro výpočet příjmu karbohydrátů. Bolus karbohydrátů je detekován pokud Ra(t) je větší než 2 mg/dl/min a naměřená hodnota z CGM je větší než 100mg/dl. Další příjem karbohydrátů může být detekován až když Ra(t) klesne pod hranici 2 mg/dl/min a uplyne alespoň 30 minut od posledního bolusu.
 
-Testování bylo provedeno na sedmi reálných pacientech, kdy v první části experimentu si pacient aplikoval inzulin sám na základě doporučení diabetologa a ve druhé části bylo dávkování inzulinu řízeno algoritmem pro detekci karbohydrátů. Nutno podotknout, že experimentu se zúčastnili mladí lidé s optimálním glykemickým profilem.
-
-Na obrázku \ref{fig:turksoy2} je porovnání obou způsobů. Experiment ukázal, že výsledky jsou statisticky ekvivaletní (hladina významnosti p=0.05).
-
-\begin{figure}[H]
-\caption{Porovnání řízení aplikace inzulinu pacientem a algoritmem pro detekci karbohydrátů}
-\label{fig:turksoy2}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyzaCHO/turksoy3.jpg}\\
-\textit{Zdroj: Real-time insulin bolusing for unannounced meals with artificial pancreas \citep{analyzaCHO.Turksoy}}
-\end{figure}
+Testování bylo provedeno na sedmi reálných pacientech, kdy v první části experimentu si pacient aplikoval inzulin sám na základě doporučení diabetologa a ve druhé části bylo dávkování inzulinu řízeno algoritmem pro detekci karbohydrátů. Nutno podotknout, že experimentu se zúčastnili mladí lidé s optimálním glykemickým profilem. Experiment ukázal, že výsledky jsou statisticky ekvivaletní.
 
 
 \subsection{Unannounced Meals in the Artificial Pancreas: Detection Using Continuous Glucose Monitoring}
@@ -63,21 +53,7 @@ Autoři \citet{analyzaCHO.CrossCovariance} počítají cross-covarianci mezi nam
 \textit{Zdroj: Unannounced Meals in the Artificial Pancreas: Detection Using Continuous Glucose Monitoring \citep{analyzaCHO.CrossCovariance}}
 \end{figure}
 
-Úspěšnost detekce jednotlivých oken je v tabulce na obrázku \ref{fig:analyza:crosscovariance2}, zpoždění detekce vzhledem k množství přijatých karbohydrátů v tabulce na obrázku \ref{fig:analyza:crosscovariance3}.
-
-\begin{figure}[H]
-\caption{Úspěšnost detekce}
-\label{fig:analyza:crosscovariance2}
-\includegraphics[width=1\textwidth]{img/analyzaCHO/crosscovariance2.png}\\
-\textit{Zdroj: Unannounced Meals in the Artificial Pancreas: Detection Using Continuous Glucose Monitoring \citep{analyzaCHO.CrossCovariance}}
-\end{figure}
-
-\begin{figure}[H]
-\caption{Zpoždění detekce}
-\label{fig:analyza:crosscovariance3}
-\includegraphics[width=1\textwidth]{img/analyzaCHO/crosscovariance3.png}\\
-\textit{Zdroj: Unannounced Meals in the Artificial Pancreas: Detection Using Continuous Glucose Monitoring \citep{analyzaCHO.CrossCovariance}}
-\end{figure}
+První okno mělo vysokou míru pravdivě pozitivních detekcí, ale také falešně pozitivních. Druhé a třetí okno razantně snižuje množství falešně pozitivních detekcí, ale také se sníží množství detekovaných jídel. Zpoždění detekce bylo v průměru 30 minut u prvního okna, s každým dalším oknem se zpoždění zvyšuje.
 
 
 \subsection{Probabilistic Evolving Meal Detection and Estimation of Meal Total Glucose Appearance}
@@ -95,15 +71,7 @@ Na obrázku \ref{fig:analyza:diff1} je znázorněn provedený experiment při p�
 \textit{Zdroj: Probabilistic Evolving Meal Detection and Estimation of Meal Total Glucose Appearance \citep{analyzaCHO.Diff}}
 \end{figure}
 
-Experiment byl proveden pro 99 scénářů. Pro 11 scénářů bez jídla nebyly žádné falešně pozitivní detekce. Pro scénáře, kdy byly přijaté karbohydráty, byl algoritmus úspěšný podle množství přijatých karbohydrátů, jak je vidět na obrázku \ref{fig:analyza:diff2}.
-
-\begin{figure}[H]
-\caption{Úspěšnost detekce vzhledem hladině glukózy a množství přijatých karbohydrátů}
-\label{fig:analyza:diff2}
-\centering
-\includegraphics[width=0.7\textwidth]{img/analyzaCHO/diff2.png}\\
-\textit{Zdroj: Probabilistic Evolving Meal Detection and Estimation of Meal Total Glucose Appearance \citep{analyzaCHO.Diff}}
-\end{figure}
+Experiment byl proveden pro 99 scénářů. Pro 11 scénářů bez jídla nebyly žádné falešně pozitivní detekce. Pro scénáře, kdy byly přijaté karbohydráty, byl algoritmus úspěšnější při příjmu většího množství karbohydrátů.
 
 
 \subsection{An Unannounced Meal Detection Module for Artificial Pancreas Control Systems}
@@ -114,7 +82,7 @@ Experiment byl proveden pro 99 scénářů. Pro 11 scénářů bez jídla nebyly
 \begin{figure}[H]
 \caption{Úspěšnost detekce vzhledem hladině glukózy a množství přijatých karbohydrátů}
 \label{fig:analyza:nekonzistence}
-\includegraphics[width=1\textwidth]{img/analyzaCHO/nekonzistence.png}\\
+\includegraphics[width=0.8\textwidth]{img/analyzaCHO/nekonzistence.png}\\
 \textit{Zdroj: An Unannounced Meal Detection Module for Artificial Pancreas Control Systems \citep{analyzaCHO.Nekonzistence}}
 \end{figure}
 
@@ -140,7 +108,7 @@ kdy V je commitment level, V<N, $\delta$ je disturbance parametr, W(i) jsou váh
 
 CMHE instance (min Ct) se optimalizují pomocí Mixed-integer Quadratic Programming (MIQP), který disturbance parametr reprezentuje jako čtvercovou vlnu (za předpokladu, že příjem karbohydrátů po dobu jídla je konstantní). Jídlo je detekováno pokud $\Delta t$ je nad daným thresholdem alespoň 80 \% času w.
 
-V provedeném experimentu je měření prováděno každou minutu, časové okno N = 180, commitment level V = 40, w = 5 minut. Na obrázku \ref{fig:analyza:horizon4} je srovnání MHE a CMHE v závislosti na nastaveném thresholdu.  V tabulce \ref{tab:analyza:horizon5} jsou výsledky experimentu pro optimálně nastavený threshold (černý trojúhelník). Metoda dosahuje 100 \% úspěšnost detekce pro hlavní jídla, celkových 88.5 \% je způsobeno menšími jídly, pro jejichž lepší detekci by musel být snížen threshold. To by ale vedlo ke zvýšení falešných detekcí, kterých je v průměru 2.6 za den. Průměrná doba detekce je 20 minut \citep{analyzaCHO.MovingHorizon}.
+V provedeném experimentu je měření prováděno každou minutu, časové okno N = 180, commitment level V = 40, w = 5 minut. Na obrázku \ref{fig:analyza:horizon4} je srovnání MHE a CMHE v závislosti na nastaveném thresholdu.  V tabulce \ref{tab:analyza:horizon5} jsou výsledky experimentu pro jednotlivá jídla, kdy nastavený threshold je optimální (černý trojúhelník). Metoda dosahuje 100 \% úspěšnost detekce pro hlavní jídla, celkových 88.5 \% je způsobeno menšími jídly, pro jejichž lepší detekci by musel být snížen threshold. To by ale vedlo ke zvýšení falešných detekcí, kterých je v průměru 2.6 za den. Průměrná doba detekce je 20 minut \citep{analyzaCHO.MovingHorizon}.
 
 \begin{figure}[H]
 \caption{Detekce MHE (modrá) a CMHE (červená)}
@@ -154,7 +122,7 @@ V provedeném experimentu je měření prováděno každou minutu, časové okno
 \caption{Výsledky}
 \label{tab:analyza:horizon5}
 \centering
-\includegraphics[width=1\textwidth]{img/analyzaCHO/horizon5.png}\\
+\includegraphics[width=0.8\textwidth]{img/analyzaCHO/horizon5.png}\\
 \textit{Zdroj: Committed Moving Horizon Estimation for Meal Detection and Estimation in Type 1 Diabetes \citep{analyzaCHO.MovingHorizon}}
 \end{table}
 
@@ -204,15 +172,7 @@ Počet impulsů, časové okno, thresholdy a množství karbohydrátů na impuls
 \textit{Zdroj: A Closed-Loop Artificial Pancreas Using Model Predictive Control and a Sliding Meal Size Estimator \citep{analyzaCHO.Thresholds}}
 \end{figure}
 
-V tabulce \ref{tab:analyza:threshold3} jsou uvedeny výsledky provedeného testování. Algoritmus dosahuje úspěšnost 82 \% a průměrný odhad jídla je 36,41~g karbohydrátů. Zpoždění detekce je průměrně 31 minut \citep{analyzaCHO.Thresholds}.
-
-\begin{table}[H]
-\caption{Výsledky}
-\label{tab:analyza:threshold3}
-\centering
-\includegraphics[width=0.8\textwidth]{img/analyzaCHO/threshold3.png}\\
-\textit{Zdroj: A Closed-Loop Artificial Pancreas Using Model Predictive Control and a Sliding Meal Size Estimator \citep{analyzaCHO.Thresholds}}
-\end{table}
+Algoritmus detekuje 656 jídel z 800 (82 \%) a 144 falešně pozitivních detekcí. Průměrný odhad jídla je 36,41~g karbohydrátů. Zpoždění detekce je průměrně 31 minut \citep{analyzaCHO.Thresholds}.
 
 
 \subsection{Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data}
@@ -226,7 +186,7 @@ Pro extrakci vlastností je použita trojúhelníková kvalitativní reprezentac
 \caption{Kvalitativní proměnné trojúhelníkové kvalitativní reprezentace}
 \label{fig:analyza:wavelet1}
 \centering
-\includegraphics[width=0.8\textwidth]{img/analyzaCHO/wavelet1.png}\\
+\includegraphics[width=0.6\textwidth]{img/analyzaCHO/wavelet1.png}\\
 \textit{Zdroj: Meal Detection and Carbohydrate Estimation Using Continuous Glucose Sensor Data \citep{analyzaCHO.WaveletEst}}
 \end{figure}
 \begin{figure}[H]
@@ -273,17 +233,18 @@ Threshold pro naměřené hodnoty glukózy a jejich rychlost změny.
 Na obrázku \ref{fig:analyza:lda1} je výkonnost jednotlivých metod při provedeném experimentu. Je vidět, že metody využívající LDA si vedly výrazně lépe. Jejich úspěšnost se pohybuje kolem 88 \%. Také v případě času potřebného k detekci překonaly metody založené na thresholdu. Srovnání zpoždění u jednotlivých metod je na obrázku \ref{fig:analyza:lda2}.
 
 \begin{figure}[H]
-\caption{Úspěšnost detekce jednotlivých metod}
+\begin{minipage}{.5\textwidth}
+\caption{Úspěšnost detekce}
 \label{fig:analyza:lda1}
 \centering
-\includegraphics[width=0.6\textwidth]{img/analyzaCHO/lda1.png}\\
-\textit{Zdroj: Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1 \citep{analyzaCHO.LDA}}
-\end{figure}
-\begin{figure}[H]
+\includegraphics[width=1\textwidth]{img/analyzaCHO/lda1.png}\\
+\end{minipage}
+\begin{minipage}{.5\textwidth}
 \caption{Zpoždění detekce}
 \label{fig:analyza:lda2}
 \centering
-\includegraphics[width=0.6\textwidth]{img/analyzaCHO/lda2.png}\\
+\includegraphics[width=1\textwidth]{img/analyzaCHO/lda2.png}\\
+\end{minipage}
 \textit{Zdroj: Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1 \citep{analyzaCHO.LDA}}
 \end{figure}
 
@@ -327,10 +288,11 @@ Pro výpočet chyby a ztrátové funkce u všech metod je použita střední abs
 \caption{Výsledky}
 \label{tab:analyza:lstm}
 \centering
-\includegraphics[width=0.6\textwidth]{img/analyzaCHO/lstm.png}\\
+\includegraphics[width=0.5\textwidth]{img/analyzaCHO/lstm.png}\\
 \textit{Zdroj: Continuous glucose monitoring prediction \citep{analyzaCHO.LSTM}}
 \end{table}
 
+\newpage
 
 \section{Porovnání jednotlivých metod}
 

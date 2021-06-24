@@ -2,7 +2,7 @@
 
 \section{Použité nástroje}
 
-Při návrhu metod jsem používal jazyk Python 3.7, který je vhodný pro analýzu dat, zvláště pak jeho knihovny NumPy, Pandas a SciPy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Dále jsem použil knihovny TensorFlow a Keras pro práci s neuronovými sítěmi a knihovnu Scikit-learn pro strojové učení.
+Při návrhu metod byl použit jazyk Python 3.7, který je vhodný pro analýzu dat, zvláště pak jeho knihovny NumPy, Pandas a SciPy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Dále jsou použity knihovny TensorFlow a Keras pro práci s neuronovými sítěmi a knihovnu Scikit-learn pro strojové učení.
 
 Implementace modulů do SmartCGMS je v jazyce C++. Použití Keras modelu neuronové sítě je za pomoci knihovny frugally-deep\citep{cho.frugally}.
 
@@ -59,7 +59,7 @@ Příklad signálů ze senzoru CGMS je v tabulce \ref{tab:cgms_data}. Informaci 
 
 \subsection{Analýza dat}
 
-Pro analýzu dat jsem vytvořil několik skriptů v Pythonu. V prvé řadě bylo nutné data ve formě signálů transformovat do dvourozměrné tabulky, kdy řádky jsou čas měření (Device Time), sloupce typ signálu (Signal). Jelikož různé typy signálů nejsou měřeny ve stejný okamžik, lze řádky seskupit podle zvoleného signálu.
+Pro analýzu dat bylo vytvořeno několik skriptů v Pythonu. V prvé řadě bylo nutné data ve formě signálů transformovat do dvourozměrné tabulky, kdy řádky jsou čas měření (Device Time), sloupce typ signálu (Signal). Jelikož různé typy signálů nejsou měřeny ve stejný okamžik, lze řádky seskupit podle zvoleného signálu.
 
 Data lze modifikovat. Chybějící data lze nahradit interpolací Akima spline\citep{cho.akima} nebo střední hodnotou. Vyhlazení dat je pomocí Savitzky-Golay filtru. Data lze normalizovat na interval <0,1> nebo <-1,1>. Pro výpočet derivace 1., 2. a 3. řádu se používá Akima spline nebo B-spline. Případně lze spočítat 1. a 2. differenci.
 
@@ -81,9 +81,9 @@ Algoritmy jsou do SmartCGMS implementovány v podobě filtrů. Ty implementují 
 
 Data mohou být rozdělena do časových segmentů dle měření. V takovém případě filtry pracují s každým segmentem zvlášť. Rozdělení do segmentů je realizováno pomocí mapy, kdy klíčem je ID segmentu a hodnotou datová struktura pro daný filtr. Na konci segmentu se údaj z mapy vymaže.
 
-Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, která umožňuje vkládání prvků z obou stran i indexaci. Konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvku se odebere prvek z druhého konce seznamu.
+Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely byl vytvořen vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, která umožňuje vkládání prvků z obou stran i indexaci. Konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvku se odebere prvek z druhého konce seznamu.
 
-Pro vyhlazení dat jsem implementoval \textbf{Savitzky-Golay} filtr. Tomuto filtru se nastavuje typ signálu, který má vyhladit, velikost okna a stupeň polynomu. Výstupem je \textbf{IST smoothed} signál.
+Pro vyhlazení dat je implementován \textbf{Savitzky-Golay} filtr. Tomuto filtru se nastavuje typ signálu, který má vyhladit, velikost okna a stupeň polynomu. Výstupem je \textbf{IST smoothed} signál.
 
 Pro vyhodnocení úspěšnosti detekce je implementován \textbf{Evaluate} filtr. Tento filtr neřeší časové segmenty. Nastavit lze zkoumaný a referenční signál, časové okno pro detekci, cooldown pro započtení falešně pozitivního výsledku a minimální počet referenčních aktivit za den. Filtr započítává dvě úrovně detekovaného signálu. Nižší (1) pro detekované aktivity a vyšší (2) pro potvrzení. Filtr zaznamenává výsledky pro každý den. Pokud počet referenčního signálu je menší, než minimální počet, den se nezapočte do celkového součtu.
 
@@ -100,7 +100,7 @@ V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detek
 
 Rekurentní neuronová síť využívá natrénovaného keras modelu. Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}.
 
-Neuronová síť je trénovaná na trénovacích datech dataset BGLP. Před natrénováním modelu jsou data ve formě signálů transformována a seskupena podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech. Data intersticiální glukózy jsou interpolována Akima spline, z níž jsem získal chybějící hodnoty a derivaci 1. řádu.
+Neuronová síť je trénovaná na trénovacích datech dataset BGLP. Před natrénováním modelu jsou data ve formě signálů transformována a seskupena podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech. Data intersticiální glukózy jsou interpolována Akima spline, z níž se získají chybějící hodnoty a derivaci 1. řádu.
 
 Skript \texttt{train\_rnn.py <type> <option> [IDs]} spustí transformaci a trénování dat. Vstupními parametry jsou typ rekurentní neuronové sítě a ID trénovacích dat pacientů. Model může být natrénován individuálně pro každého pacienta nebo na celém souboru dat. Vstupní data modelu jsou hodnoty intersticiální glukózy, jejich první derivace a čas signálu v minutách. Díky časovému údaji neuronová síť zahrne do predikce určité denní návyky pacienta. Časové okno je velikosti 24 (tj. 2 hodiny). Z datasetu je 80 \% dat použito pro trénování a 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají. Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. Neuronová síť je trénovaná ve 100 epochách. 
 

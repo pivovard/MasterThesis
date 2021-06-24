@@ -2,7 +2,7 @@
 
 Příjem karbohydrátů způsobuje zvýšení hladiny koncentrace glukózy v krvi, které je nutné kompenzovat podáním inzulinu. Včasnou detekcí může systém upravit množství podávaného inzulinu tak, aby nedošlo k hyperglykémii.
 
-Detekce karbohydrátů je na základě dat intersticiální glukózy měřené senzorem CGMS a její derivace. Pro detekci jsem zvolil tyto 3 metody:
+Detekce karbohydrátů je na základě dat intersticiální glukózy měřené senzorem CGMS a její derivace. Pro detekci byly navrženy a testovány tři metody:
 \begin{itemize}
 \setlength\itemsep{0em}
 \item Long short-term memory neuronová síť (kapitola \ref{ch:lstm})
@@ -23,7 +23,7 @@ $H_{t}=\sigma (W_{h}H_{t-1}+W_{x}X_{t}+b)$
 \caption{Rekurentní neuronová síť}
 \label{fig:rnn}
 \centering
-\includegraphics[width=0.65\textwidth]{img/cho/rnn.jpeg}\\
+\includegraphics[width=0.55\textwidth]{img/cho/rnn.jpeg}\\
 \textit{Zdroj: https://medium.com/}
 \end{figure}
 
@@ -54,7 +54,7 @@ Diagram LSTM buňky je na obrázku \ref{fig:lstm_cell}.
 \caption{LSTM buňka}
 \label{fig:lstm_cell}
 \centering
-\includegraphics[width=0.9\textwidth]{img/cho/lstm_cell.png}\\
+\includegraphics[width=0.8\textwidth]{img/cho/lstm_cell.png}\\
 \textit{Zdroj: https://medium.com/}
 \end{figure}
 
@@ -85,7 +85,7 @@ Diagram GRU buňky je na obrázku \ref{fig:gru_cell}.
 
 \subsection{Model}
 
-Pro detekci karbohydrátů jsem sestavil sekvenční keras model\footnote{Keras je nadstavba nad knihovnou TensorFlow pro neuronové sítě} se čtyřmi vrstvami:
+Pro detekci karbohydrátů byl sestaven sekvenční keras model\footnote{Keras je nadstavba nad knihovnou TensorFlow pro neuronové sítě} se čtyřmi vrstvami:
 \begin{itemize}
 \setlength\itemsep{0em}
 \item Obousměrná LSTM nebo GRU
@@ -109,7 +109,7 @@ Dropout vrstva s \textit{rate=0,2} náhodně nastaví některé vstupy na nulu v
 \section{Lineární a kvadratická diskriminační analýza}
 \label{ch:lda_qda}
 
-Pro diskriminační analýzu jsem se rozhodl vzhledem k vysoké úspěšnosti a malému zpoždění, které dosáhli \citet{analyzaCHO.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:analyzaCHO:lda}).
+Diskriminační analýza byla vybrána vzhledem k vysoké úspěšnosti a malému zpoždění, kterého dosáhli \citet{analyzaCHO.LDA} v článku \textbf{Pattern Recognition Reveals Characteristic Postprandial Glucose Changes: Non-Individualized Meal Detection in Diabetes Mellitus Type 1} (kapitola \ref{ch:analyzaCHO:lda}).
 
 Diskriminační analýza slouží k rozdělení prvků do konečného počtu tříd na základě lineární kombinace charakteristických prvků. Pro klasifikaci potřebujeme znát posteriory tříd \textbf{P(Y|X)}. Pravděpodobnostní model \textbf{P(X|y=k)} pro každou třídu \textbf{k} lineární a kvadratické diskriminační analýzy je dán vícerozměrnou Gaussovo distribucí \citep{cho.book.lda}:
 
@@ -151,7 +151,7 @@ X_{i-W} & X_{i-W-1} & ... & X_{i-1} & X_{i}
 
 \noindent kde W je velikost časového okna. Časové okno jako vstupní data použili i \citet{analyzaCHO.LDA}.
 
-Při experimentální implementaci diskriminační analýzy se mi nepodařilo dosáhnout stejných výsledků, jako autoři původního článku. Nejlepších výsledků dosahovala kvadratická diskriminační analýza, jejímž vstupem bylo dvouhodinové časové okno. Z testovacích 150 zadaných jídel jich detekovala 54 \% a falešně pozitivních detekcí bylo 155. Rozdílné výsledky mohou být dány tím, že původní metoda byla otestována pouze s daty predikovanými na základě Bergmanova modelu, ale ne s reálnými daty pacientů.
+Při experimentální implementaci diskriminační analýzy se nepodařilo dosáhnout stejných výsledků, jako autoři původního článku. Nejlepších výsledků dosahovala kvadratická diskriminační analýza, jejímž vstupem bylo dvouhodinové časové okno. Z testovacích 150 zadaných jídel jich detekovala 54 \% a falešně pozitivních detekcí bylo 155. Rozdílné výsledky mohou být dány tím, že původní metoda byla otestována pouze s daty predikovanými na základě Bergmanova modelu, ale ne s reálnými daty pacientů.
 
 \section{Detekce hran průběhu intersticiální glukózy}
 \label{ch:threshold}
@@ -166,7 +166,7 @@ Jelikož data ze senzoru CGMS jsou diskrétní, můžeme derivaci nahradit rovni
 
 \scalebox{1.2}{$\Delta IST = \frac{IST_{t} - IST_{t-1}}{\Delta t}$}
 
-Naměřená data intersticiální glukózy mohou být zatížena šumem a případně i dočasnými výchylkami hodnot glukózy. Každá taková výchylka pak má značný vliv na hodnotu derivace. Z toho důvodu je potřeba data před výpočtem vyhladit. Pro vyhlazení dat byl zvolen digitální Savitzky-Golay filtr. Každá podmnožina $2m+1$ prvků je vzorkována na polynom stupně $p (p\leq 2m)$ ve smyslu nejmenších čtverců \citep{cho.savgol}. Pro vyhlazení dat intersticiální glukózy jsem zvolil polynom stupně 3 a velikost podmnožiny 21. Vyhlazená data vidíme v grafu na obrázku \ref{fig:savgol}.
+Naměřená data intersticiální glukózy mohou být zatížena šumem a případně i dočasnými výchylkami hodnot glukózy. Každá taková výchylka pak má značný vliv na hodnotu derivace. Z toho důvodu je potřeba data před výpočtem vyhladit. Pro vyhlazení dat byl zvolen digitální Savitzky-Golay filtr. Každá podmnožina $2m+1$ prvků je vzorkována na polynom stupně $p (p\leq 2m)$ ve smyslu nejmenších čtverců \citep{cho.savgol}. Pro vyhlazení dat intersticiální glukózy byl zvolen polynom stupně 3 a velikost podmnožiny 21. Vyhlazená data vidíme v grafu na obrázku \ref{fig:savgol}.
 
 \begin{figure}[H]
 \caption{Vyhlazená data intersticiální glukózy}

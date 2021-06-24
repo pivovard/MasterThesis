@@ -1,1 +1,14 @@
 \chapter{Závěr}
+
+V rámci práce byly navrženy a implementovány metody detekce příjmu karbohydrátů pomocí rekurentních neuronových sítí a detekce hran průběhu intersticiální glukózy. Nejlepších výsledků dosahovala kombinace detekce hran a rekurentní neuronové sítě, kdy citlivost detekce byla 89 \%. Zpoždění detekce 22,61 minut je srovnatelné, nebo i lepší, než výsledky zkoumaných algoritmů v kapitole \ref{ch:analyzaCHO}.
+
+Metoda detekce průběhu intersticiální glukózy by se dala za použití detekce vzestupné i sestupné hrany rozšířit pro detekci glykemického indexu.
+
+Detekce fyzické aktivity je realizována na základě pohybových dat, srdečního tepu, elektrodermální aktivity a jejich kombinací. Nejvyšší citlivosti detekce bylo dosáhnuto při použití pohybových dat. Detekce sestupné hrany průběhu intersticiální glukózy neměla na výsledky vliv. Přesnost detekce fyzické aktivity by se dala zvýšit použitím 3-osého akcelerometru.
+
+Metody detekce příjmu karbohydrátů i fyzické aktivity mají vyšší počet falešně pozitivních výsledků. To je dáno tím, že zkoumané ukazatele jsou ovlivněny mnoha externími faktory. V datech se také vyskytují oblasti, kdy pacient nezadal do aplikace poctivě všechny aktivity. U detekce karbohydrátů se množství falešně pozitivních detekcí podařilo snížit metodou potvrzování detekce vyšším thresholdem nebo neuronovou sítí. U detekce fyzické aktivity se falešně pozitivní výsledky značně snížily při použití kombinace ukazatelů.
+
+Do aplikace SmartCGMS byly implementovány celkem čtyři filtry. Savitzky-Golay filtr pro vyhlazení dat, filtr detekce karbohydrátů umožňující detekci pomocí hran průběhu intersticiální glukózy, pomocí rekurentních neuronových sítí, nebo jejich kombinace, filtr detekce fyzické aktivity a evaluační filtr pro vyhodnocení výsledků.
+
+Parametry filtrů jsou nastavitelné, pro ukázku bylo vytvořeno několik konfigurací. U detekčních filtrů jsou thresholdy ve formě parametrů modelu a je možné aplikaci rozšířit o solver, který by našel nejoptimálnější thresholdy pro každého pacienta.
+
