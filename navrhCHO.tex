@@ -27,7 +27,7 @@ $H_{t}=\sigma (W_{h}H_{t-1}+W_{x}X_{t}+b)$
 \textit{Zdroj: https://medium.com/}
 \end{figure}
 
-Riziko RNN spočívá v náchylnosti vzniku jevu označovaného jako mizející nebo explodující gradient vznikajícího při zpětné propagaci, kdy hodnoty exponenciálně klesají nebo rostou. To je z důvodu, že se chyba propaguje přes všechny iterace. Tento problém eliminuje long short-term memory nebo gated recurrent unit neuronová síť.
+Riziko RNN spočívá v náchylnosti vzniku jevu označovaného jako mizející nebo explodující gradient vznikající při zpětné propagaci, kdy hodnoty exponenciálně klesají nebo rostou. To je z důvodu, že se chyba propaguje přes všechny iterace. Tento problém eliminuje long short-term memory nebo gated recurrent unit neuronová síť.
 
 \subsection{Long short-term memory}
 
@@ -54,13 +54,13 @@ Diagram LSTM buňky je na obrázku \ref{fig:lstm_cell}.
 \caption{LSTM buňka}
 \label{fig:lstm_cell}
 \centering
-\includegraphics[width=0.9\textwidth]{img/cho/lstm_cell.png}
+\includegraphics[width=0.9\textwidth]{img/cho/lstm_cell.png}\\
 \textit{Zdroj: https://medium.com/}
 \end{figure}
 
 \subsection{Gated recurrent unit}
 
-Gated recurrent unit neuronová síť (GRU) využívá Update gate $z_{t}$ a Reset gate $r_{t}$. Ty určují která informace bude propagována na výstup. Mohou tak vytěžit relevantní informace. Update a reset gate se spočte \citep{cho.gru}:
+Gated recurrent unit neuronová síť (GRU) využívá Update gate $z_{t}$ a Reset gate $r_{t}$. Ty určují, jaká část informace bude propagována na výstup. Mohou tak vytěžit relevantní informace. Update a reset gate se spočte \citep{cho.gru}:
 
 $z_{t}=\sigma(W_{z}x_{t} + U_{z}h_{t-1})$\\\indent
 $r_{t}=\sigma(W_{r}x_{t} + U_{r}h_{t-1})$
@@ -151,14 +151,14 @@ X_{i-W} & X_{i-W-1} & ... & X_{i-1} & X_{i}
 
 \noindent kde W je velikost časového okna. Časové okno jako vstupní data použili i \citet{analyzaCHO.LDA}.
 
-Při experimentální implementaci diskriminační analýzy se mi nepodařilo dosáhnout stejných výsledků, jako autoři původního článku. Nejlepších výsledků dosahoval kvadratická diskriminační anaýza jejímž vstupem bylo dvou hodinové časové okno. Z testovacích 150 zadaných jídel jich detekovala 54 \% a falešně pozitivních detekcí bylo 155. Rozdílné výsledky mohou být dány tím, že původní metoda byla otestována pouze s daty predikovanými na základě Bergmanova modelu, ale ne s reálnými daty pacientů.
+Při experimentální implementaci diskriminační analýzy se mi nepodařilo dosáhnout stejných výsledků, jako autoři původního článku. Nejlepších výsledků dosahovala kvadratická diskriminační analýza, jejímž vstupem bylo dvouhodinové časové okno. Z testovacích 150 zadaných jídel jich detekovala 54 \% a falešně pozitivních detekcí bylo 155. Rozdílné výsledky mohou být dány tím, že původní metoda byla otestována pouze s daty predikovanými na základě Bergmanova modelu, ale ne s reálnými daty pacientů.
 
 \section{Detekce hran průběhu intersticiální glukózy}
 \label{ch:threshold}
 
 Tato metoda detekuje vzestupné a klesající hrany průběhu intersticiální glukózy pomocí thresholdů první diference měřených hodnot intersticiální glukózy.
 
-Derivace funkce $f'(x)$ v bodě $x$ je směrnicí tečny funkce $f(x)$ v daném bodě. Její hodnota je rovna tangens úhlu $\alpha$, který tečná svírá s osou x. Pakliže je funkce $f(x)$ v bodě $x$ rostoucí, $tg(\alpha)$ je kladný. Pokud je $f(x)$ klesající, $tg(\alpha)$ je záporný. Velikost derivace v bodě $x$ pak udává velikost změny $f(x)$, neboli říká, jak strmě funkce stoupá či klesá. Derivace funkce $f(x)$ v bodě $x_{1}$ můžeme vyjádřit jako:
+Derivace funkce $f'(x)$ v bodě $x$ je směrnicí tečny funkce $f(x)$ v daném bodě. Její hodnota je rovna tangens úhlu $\alpha$, který svírá tečna s osou x. Pakliže je funkce $f(x)$ v bodě $x$ rostoucí, $tg(\alpha)$ je kladný. Pokud je $f(x)$ klesající, $tg(\alpha)$ je záporný. Velikost derivace v bodě $x$ pak udává velikost změny $f(x)$, neboli říká, jak strmě funkce stoupá či klesá. Derivace funkce $f(x)$ v bodě $x_{1}$ můžeme vyjádřit jako:
 
 \scalebox{1.2}{$f'(x) = \frac{d}{dx}f(x) = \lim_{x \to x_{0}} \frac{f(x)-f(x_{0})}{x-x_{0}}$}
 

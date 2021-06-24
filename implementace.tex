@@ -2,7 +2,7 @@
 
 \section{Použité nástroje}
 
-Při návrhu metod jsem používal jazyk Python, který je vhodný pro analýzu dat, zvláště pak jeho knihovny NumPy, Pandas a SciPy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Dále jsem použil knihovny TensorFlow a Keras pro práci s neuronovými sítěmi a knihovnu Scikit-learn pro strojové učení.
+Při návrhu metod jsem používal jazyk Python 3.7, který je vhodný pro analýzu dat, zvláště pak jeho knihovny NumPy, Pandas a SciPy pro zpracování a analýzu dat a matplotlib pro vykreslení dat. Dále jsem použil knihovny TensorFlow a Keras pro práci s neuronovými sítěmi a knihovnu Scikit-learn pro strojové učení.
 
 Implementace modulů do SmartCGMS je v jazyce C++. Použití Keras modelu neuronové sítě je za pomoci knihovny frugally-deep\citep{cho.frugally}.
 
@@ -10,7 +10,7 @@ Implementace modulů do SmartCGMS je v jazyce C++. Použití Keras modelu neuron
 \label{ch:bglp}
 
 \begin{setlength}{\parskip}{0pt}
-Anonymizovaná data ze senzoru CGMS obsahují naměřené a zadané hodnoty:
+Dataset BGLP je veřejně dostupný soubor dat, který obsahuje anonymizovaná data ze senzoru CGMS. Dataset obsahuje naměřené a zadané hodnoty:
 \begin{itemize}
 \setlength\itemsep{0em}
 \item Glukóza v krvi (BG)
@@ -29,7 +29,8 @@ Anonymizovaná data ze senzoru CGMS obsahují naměřené a zadané hodnoty:
 \end{itemize}
 \end{setlength}
 
-Intersticiální glukóza je měřena v pětiminutových intervalech. Glukóza v krvi, podávaný inzulin (bolus i bazál), karbohydráty, fyzická aktivita a kvalita spánku jsou zadávány pacientem. Senzor měří buď srdeční tep a počet kroků, nebo akceleraci. Srdeční tep a počet kroků se měří v pětiminutových intervalech, akcelerace v minutových intervalech. Elektrodermální aktivita a teplota kůže a okolí se měří ve stejném intervalu podle toho, zda se měří tep nebo akcelerace.
+Intersticiální glukóza je měřena v pětiminutových intervalech. Glukóza v krvi, podávaný inzulin (bolus i bazál), karbohydráty, fyzická aktivita a kvalita spánku jsou zadávány pacientem. Senzor měří buď srdeční tep a počet kroků, nebo akceleraci. Pacient měl zároveň senzor Empatica Embrace nebo Basis Peak. V případě Empatica Embrace se měří velikost akcelerace v minutových intervalech.
+Basis Peak měří srdeční tep a počet kroků v pětiminutových intervalech Elektrodermální aktivita a teplota kůže a okolí se měří ve stejném intervalu podle toho, zda se měří tep nebo akcelerace.
 
 \begin{setlength}{\parskip}{0pt}
 CGMS senzor posílá data ve formě signálů, které mají strukturu:
@@ -56,6 +57,12 @@ Příklad signálů ze senzoru CGMS je v tabulce \ref{tab:cgms_data}. Informaci 
 \includegraphics[width=1\textwidth]{img/cho/cgms_data.png}
 \end{table}
 
+\subsection{Analýza dat}
+
+Pro analýzu dat jsem vytvořil několik skriptů v Pythonu. V prvé řadě bylo nutné data ve formě signálů transformovat do dvourozměrné tabulky, kdy řádky jsou čas měření (Device Time), sloupce typ signálu (Signal). Jelikož různé typy signálů nejsou měřeny ve stejný okamžik, lze řádky seskupit podle zvoleného signálu.
+
+Data lze modifikovat. Chybějící data lze nahradit interpolací Akima spline\citep{cho.akima} nebo střední hodnotou. Vyhlazení dat je pomocí Savitzky-Golay filtru. Data lze normalizovat na interval <0,1> nebo <-1,1>. Pro výpočet derivace 1., 2. a 3. řádu se používá Akima spline nebo B-spline. Případně lze spočítat 1. a 2. differenci.
+
 V grafech na obrázku \ref{fig:48h_dataset} jsou transformovaná data naměřená senzorem CGMS za 48 hodin. Na prvním grafu jsou hodnoty Intersticiální glukózy a její vyhlazení Savitzky-Golay filtrem. Druhý graf znázorňuje zadanou bazální dávku inzulinu, bolusy, příjem karbohydrátů a fyzickou aktivitu. Na posledním grafu jsou hodnoty srdečního tepu, počtu kroků, elektrodermální aktivity, teploty kůže a teploty okolí.
 
 \begin{figure}[H]
@@ -65,6 +72,8 @@ V grafech na obrázku \ref{fig:48h_dataset} jsou transformovaná data naměřen�
 \includegraphics[width=1\textwidth]{img/cho/48h_dataset.png}
 \end{figure}
 
+Další skripty slouží pro analýzu metod detekce karbohydrátů a fyzické aktivity. Použití skriptů je popsáno v příloze B.
+
 
 \section{Filtr pro SmartCGMS}
 
@@ -72,7 +81,7 @@ Algoritmy jsou do SmartCGMS implementovány v podobě filtrů. Ty implementují 
 
 Data mohou být rozdělena do časových segmentů dle měření. V takovém případě filtry pracují s každým segmentem zvlášť. Rozdělení do segmentů je realizováno pomocí mapy, kdy klíčem je ID segmentu a hodnotou datová struktura pro daný filtr. Na konci segmentu se údaj z mapy vymaže.
 
-Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, které umožňuje vkládání prvků z obou stran i indexaci. Konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvků se odebere prvek z druhého konce seznamu.
+Implementované algoritmy pracují s daty v určitém časovém okně. Pro tyto účely jsem vytvořil vlastní spojový seznam na principu klouzavého okénka \textbf{swl}. Ten dědí od \textit{std::deque}, která umožňuje vkládání prvků z obou stran i indexaci. Konstruktor má jeden parametr určující velikost okna. Při vložení nadlimitního prvku se odebere prvek z druhého konce seznamu.
 
 Pro vyhlazení dat jsem implementoval \textbf{Savitzky-Golay} filtr. Tomuto filtru se nastavuje typ signálu, který má vyhladit, velikost okna a stupeň polynomu. Výstupem je \textbf{IST smoothed} signál.
 
@@ -83,19 +92,19 @@ Možnosti nastavení všech filtrů a spuštění detekce je popsáno v příloz
 
 \subsection{Detekce příjmu karbohydrátů}
 
-\textbf{CHO detection} filtr počítá aktivační funkci a detekci karbohydrátů. To je implementováno rekurentní neuronovou sítí nebo detekcí hran průběhu intersticiální glukózy tak jak je popsáno v kapitole \ref{ch:threshold}. Filtr posílá dva signály. \textbf{Activation} signál je výstup použitého algoritmu a \textbf{CHO probability} udávající detekovaný příjem (1 - nižší pravděpodobnost, 2 - vyšší pravděpodobnost).
+\textbf{CHO detection} filtr počítá aktivační funkci a detekci karbohydrátů. To je implementováno rekurentní neuronovou sítí nebo detekcí hran průběhu intersticiální glukózy tak, jak je popsáno v kapitole \ref{ch:threshold}. Filtr posílá dva signály, Activation a CHO probability. \textbf{Activation} signál je výstup použitého algoritmu a \textbf{CHO probability} udává detekovaný příjem (1 - nižší pravděpodobnost, 2 - vyšší pravděpodobnost).
 
-V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \texttt{setup\_th.ini} (viz příloha B). V případě detekce hran musí tomuto filtru předcházet Savitzky-Golay filtr pro vyhlazení dat intersticiální glukózy.
+V případě detekce hran jsou nastaveny 2 thresholdy. Nižší pro brzkou detekci, která ale může detekovat výkyvy nesouvisející s příjmem jídla. Vyšší threshold je potvrzovací, kdy existuje vysoká pravděpodobnost příjmu karbohydrátů. Detekce je pouze pro vzestupnou hranu. Potvrzení může být i pomocí rekurentní neuronové sítě. Příklad konfigurace thresholdů je v konfiguračním souboru \texttt{setup\_th.ini}. V případě detekce hran musí tomuto filtru předcházet Savitzky-Golay filtr pro vyhlazení dat intersticiální glukózy.
 
 \subsubsection{Rekurentní neuronová síť}
 
-Rekurentní neuronová síť využívá natrénovaného keras modelu.Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}.
+Rekurentní neuronová síť využívá natrénovaného keras modelu. Ten je možné použít v C++ pomocí knihovny frugally-deep \citep{cho.frugally}.
 
-Před trénováním modelu je třeba data ve formě signálů transformovat. Sloupce Device Time, Signal a Info jsem extrahoval do dvourozměrné tabulky, kde řádky jsou čas měření a sloupce jednotlivé typy signálů. Jelikož různé typy signálu nejsou měřeny ve stejný okamžik, řádky jsem seskupil podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech. Data intersticiální glukózy jsem interpoloval Akima spline \citep{cho.akima}, z níž jsem získal chybějící hodnoty a derivace 1. 2. a 3. řádu.
+Neuronová síť je trénovaná na trénovacích datech dataset BGLP. Před natrénováním modelu jsou data ve formě signálů transformována a seskupena podle sloupce intersticiální glukózy, která je měřena v pětiminutových intervalech. Data intersticiální glukózy jsou interpolována Akima spline, z níž jsem získal chybějící hodnoty a derivaci 1. řádu.
 
-Model může být natrénován individuálně pro každého pacienta, nebo na celém souboru dat. Vstupní data modelu jsou hodnoty intersticiální glukózy, jejich první derivace a čas signálu v minutách. Díky časovému údaji neuronová síť zahrne do predikce určité denní návyky pacienta. Časové okno je velikosti 24 (tj. 2 hodiny). Z datasetu je 80 \% dat použito pro trénování a 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají. Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. Neuronová síť je trénovaná ve 100 epochách. 
+Skript \texttt{train\_rnn.py <type> <option> [IDs]} spustí transformaci a trénování dat. Vstupními parametry jsou typ rekurentní neuronové sítě a ID trénovacích dat pacientů. Model může být natrénován individuálně pro každého pacienta nebo na celém souboru dat. Vstupní data modelu jsou hodnoty intersticiální glukózy, jejich první derivace a čas signálu v minutách. Díky časovému údaji neuronová síť zahrne do predikce určité denní návyky pacienta. Časové okno je velikosti 24 (tj. 2 hodiny). Z datasetu je 80 \% dat použito pro trénování a 20 \% pro validaci. Data jsou do neuronové sítě dávkována v dávkách o velikosti 64. Jelikož se jedná o časovou řadu, data se nepromíchávají. Jako ztrátová funkce je použita střední kvadratická chyba (MeanSquaredError), optimalizační algoritmus je Adam. Neuronová síť je trénovaná ve 100 epochách. 
 
-Natrénovaný model je nutné konvertovat pomocí skriptu \texttt{keras\_export/ convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. SmartCGMS filtr následně tento model načte při konfiguraci. Příklad konfigurace s GRU je v konfiguračním souboru \texttt{setup\_gru.ini} (viz příloha B).
+Natrénovaný model je nutné konvertovat pomocí skriptu \texttt{keras\_export/ convert\_model.py}, který je součástí frugally-deep knihovny. Podporované sítě jsou LSTM i GRU. SmartCGMS filtr následně tento model načte při konfiguraci. Příklad konfigurace s GRU je v konfiguračním souboru \texttt{setup\_gru.ini}.
 
 
 
@@ -105,7 +114,12 @@ Filtr \textbf{PA detection} detekuje fyzickou aktivitu na základě vybraných u
 
 Pro detekci sestupné hrany je nutné před tento filtr zařadit \textit{Savitzky-Golay} filtr pro vyhlazení dat. Nastavení thresholdů a vah je stejné jako u detekce karbohydrátů.
 
+V případě, že se nepoužívá potvrzení detekcí sestupné hrany, posílá filtr signál \textbf{PA detected} o hodnotě 2. Při použití detekce sestupné hrany má tento signál hodnotu 1, pokud byla aktivita detekována pouze na základě ukazatelů, a hodnotu 2, pokud byla detekce potvrzena sestupnou hranou.
 
-V případě, že se nepoužívá potvrzení detekcí sestupné hrany, posílá filtr signál \textbf{PA detected} o hodnotě 2. Při použití detekce sestupné hrany má tento signál hodnotu 1 pokud byla aktivita detekována pouze na základě ukazatelů a hodnotu 2 pokud byla detekce potvrzena sestupnou hranou.
+Příklad konfigurace s měřeným srdečním tepem a počtem kroků je v konfiguračním souboru \texttt{setup\_bpm.ini}. Příklad konfigurace s akcelerací a potvrzováním pomocí detekce sestupné hrany je v konfiguračním souboru \texttt{setup\_acc.ini}.
 
-Příklad konfigurace s měřeným srdečním tepem a počtem kroků je v konfiguračním souboru \texttt{setup\_bpm.ini}. Příklad konfigurace s akcelerací a potvrzováním pomocí detekce sestupné hrany je v konfiguračním souboru \texttt{setup\_acc.ini} (viz příloha B).
+\subsection{Možnosti rozšíření}
+
+Thresholdy a váhy u detekce hran průběhu intersticiální glukózy a thresholdy u detekce fyzické aktivity jsou zadávány jako parametry modelu. To umožňuje implementaci solveru, který by byl schopný optimalizovat thresholdy tak, aby detekce dosahovala nejlepších možných výsledků.
+
+Další možností je propojení se senzorem akcelerace ve třech osách. Takovým mohou být například chytré hodinky nebo fitness nárameky. Z dat 3-osého akcelerometru lze přesněji určit typ pohybu a tudíž přesněji rozlišit fyzickou aktivitu od běžného pohybu.

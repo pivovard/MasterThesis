@@ -11,9 +11,12 @@
 % 
 % Texty abstraktů (anglicky, česky)
 %
-\abstracttexten{The text of the abstract (in English). It contains the English translation of the thesis title and a short description of the thesis.}
+\abstracttexten{
+This thesis deals with carbohydrate and physical activity detection of a type 1 diabetic patient. The aim of the thesis was to evaluate existing detection methods and implement detection as filters in the SmartCGMS application. Two methods were proposed and implemented for carbohydrate detection. The first method uses recurrent neural networks, while the second detects the edges of the interstitial glucose waveform measured by a continuous glucose monitoring sensor. Physical activity detection is based on heart rate and motion data.
+}
 
-\abstracttextcz{Text abstraktu (česky). Obsahuje krátkou anotaci (cca 10 řádek) v češtině. Budete ji potřebovat i při vyplňování údajů o bakalářské práci ve STAGu. Český i anglický abstrakt by měly být na stejné stránce a měly by si obsahem co možná nejvíce odpovídat (samozřejmě není možný doslovný překlad!).
+\abstracttextcz{
+Tato diplomová práce se zabývá detekcí karbohydrátů a fyzické aktivity diabetického pacienta 1. typu. Cílem práce bylo zhodnotit existující metody detekce a implementovat vlastní řešení jako filtry do aplikace SmartCGMS. Pro detekci karbohydrátů byly navrženy a implementovány dvě metody. První využívá rekurentní neuronové sítě, druhá detekuje hrany průběhu intersticiální glukózy měřené senzorem kontinuální monitorace glukózy. Detekce fyzické aktivity je na základě hodnot srdečního tepu a pohybových dat.
 }
 
 % Na titulní stranu a do textu prohlášení se automaticky vkládá 
@@ -87,17 +90,15 @@
 \input{navrhPA}
 \input{implementace}
 \input{vysledky}
-
-
-
 \input{zaver}
 
+\input{zkratky}
 \bibliographystyle{csplainnatkiv}
 {\raggedright\small
 \bibliography{literatura}
 }
 
-\input{zkratky}
-\input{appendix}
+\input{appendixA}
+\input{appendixB}
 
 \end{document}
