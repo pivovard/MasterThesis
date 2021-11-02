@@ -1,11 +1,49 @@
 \chapter*{Příloha B}
 \addcontentsline{toc}{chapter}{Příloha B}
 
+\section*{Adresářová struktura}
+\addcontentsline{toc}{section}{Adresářová struktura}
+
+\begin{itemize}
+\item Aplikace\_a\_knihovny
+ \begin{itemize}
+  \item detection
+  \begin{itemize}
+  \item src - zdrojové soubory filtrů pro SmartCGMS
+  \item CMakeLists.txt
+  \end{itemize}
+ \item lib - knihovny
+ \item scripts - python skripty
+ \item setup - konfigurační soubory
+ \item detection.dll - knihovna filtrů pro SmartCGMS
+ \end{itemize}
+\item Poster
+\item Text\_prace
+ \begin{itemize}
+  \item src - zdrojové tex soubory
+  \item dp.pdf
+  \end{itemize}
+\item Vstupni\_data
+
+ \begin{itemize}
+  \item model - natrénované keras modely GRU sítě\\(vstupní data pacientů není možné přiložit z důvodu autorských práv)
+  \end{itemize}
+\item Vysledky - vysledky provedených experimentů
+\end{itemize}
+
 \section*{Knihovny, kompilace, spuštění}
 \addcontentsline{toc}{section}{Knihovny, kompilace, spuštění}
 
-SmartCGMS je dostupný na \textit{https://diabetes.zcu.cz/smartcgms}. Knihovna je kompilována v C++ 17. Pro kompilaci jsou nutné header soubory SmartCGMS a knihovny VisualLeakDetector, frugally-deep, Eigen, FunctionalPlus a json. K dispozici je CMake skript.
-Vytvořená dynamická knihovna \texttt{detection.dll} se umístí do složky filters. Grafické rozhraní SmartCGMS se spustí programem \texttt{gpredict3.exe}, konzolová verze programem \texttt{console3.exe}.
+SmartCGMS je dostupný na https://diabetes.zcu.cz/smartcgms. Knihovna je
+kompilována v C++ 17. Pro kompilaci jsou nutné header soubory SmartCGMS
+a knihovny \href{https://kinddragon.github.io/vld/}{VisualLeakDetector},
+\href{https://github.com/Dobiasd/frugally-deep}{frugally-deep},
+\href{https://gitlab.com/libeigen/eigen}{Eigen},
+\href{https://github.com/Dobiasd/FunctionalPlus}{FunctionalPlus} a
+\href{https://github.com/nlohmann/json}{json}. K dispozici je CMake
+skript. Vytvořená dynamická knihovna \texttt{detection.dll} se umístí do
+složky filters. Grafické rozhraní SmartCGMS se spustí programem
+\texttt{gpredict3.exe}, konzolová verze programem \texttt{console3.exe}.
 
 \section*{Nastavení filtrů}
 \addcontentsline{toc}{section}{Nastavení filtrů}
@@ -14,85 +52,107 @@ Vytvořená dynamická knihovna \texttt{detection.dll} se umístí do složky fi
 
 Filtr pro vyhlazení dat.
 
-\noindent- Signal - zdrojový signál pro vyhlazení\\
-- Window size - velikost okna Savitzky-Golay filtru\\
-- Degre - stupeň polynomu
+\begin{itemize}
+\setlength\itemsep{-1.5em}
+\item Signal - zdrojový signál pro vyhlazení\\
+\item Window size - velikost okna Savitzky-Golay filtru\\
+\item Degre - stupeň polynomu
+\end{itemize}
 
-Filtr posílá vyhlazená data v signálu Savgol signal. V případě použití více filtrů je nutné výstupní signál přemapovat.
+\noindent Filtr posílá vyhlazená data v signálu Savgol signal. V případě použití více filtrů je nutné výstupní signál přemapovat.
 
 \subsection*{CHO detection}
 
 Filtr detekce příjmu karbohydrátů.
 
-\noindent- Signal - detekovaný signál\\
-- Window size - velikost klouzavého okénka\\
-- Detect edges - detekce vzestupných hran\\
-- Detect descending edges - detekce sestupných hran\\
-- Rise threshold - threshold pro určení míry stoupání/klesání v čase\\
-- Use RNN - použití rekurentní neuronové sítě\\
-- RNN model file path - cesta k souboru s natrénovaným keras modelem převedeným do formátu pro frugally-deep\\
-- RNN threshold - threshold detekce neuronovou sítí\\
-- Thresholds\\
+\begin{itemize}
+\setlength\itemsep{-1.5em}
+\item Signal - detekovaný signál\\
+\item Window size - velikost klouzavého okénka\\
+\item Detect edges - detekce vzestupných hran\\
+\item Detect descending edges - detekce sestupných hran\\
+\item Rise threshold - threshold pro určení míry stoupání/klesání v čase\\
+\item Use RNN - použití rekurentní neuronové sítě\\
+\item RNN model file path - cesta k souboru s natrénovaným keras modelem převedeným do formátu pro frugally-deep\\
+\item RNN threshold - threshold detekce neuronovou sítí\\
+\item Thresholds\\
 	\indent- Threshold Low - threshold malé změny IST\\
 	\indent- Weight Low - váha malé změny IST\\
 	\indent- Threshold High - threshold velké změny IST\\
 	\indent- Weight High - váha velké změny IST
+\end{itemize}
 
-Filtr posílá aktivační funkce a detekované karohydráty.
+\noindent Filtr posílá aktivační funkce a detekované karohydráty.
 Příklad konfigurace detekce hran průběhu intersticiální glukózy je v souboru \texttt{setup/setup\_th.ini}, příklad neuronové sítě v souboru \texttt{setup/setup\_gru.ini`}.
 
 \subsection*{PA detection}
 
 Filtr detekce fyzické aktivity.
 
-\noindent- Heartbeat - detekce podle srdečního tepu\\
-- Steps - detekce podle počtu kroků\\
-- Acceleration - detekce podle hodnoty akcelerace\\
-- Electrodermal activity - detekce podle elektrodermální aktivity\\
-- Mean - použití průměru za časové okno\\
-- Window size - mean - velikost klouzavého okénka pro spočítání průměru (v případě velikosti okna 1 je průměr rovná aktuální hodnotě)\\
-- Detect IST edges - potvrzení detekce sestupnou hranou dat IST\\
-- Signal - detekovaný signal\\
-- Window size - edges - velikost klouzavého okénka pro detekci hran\\
-- Thresholds - threshold ukazatelů pro detekci a thresholdy a váhy pro detekci hran
+\begin{itemize}
+\setlength\itemsep{-1.5em}
+\item Heartbeat - detekce podle srdečního tepu\\
+\item Steps - detekce podle počtu kroků\\
+\item Acceleration - detekce podle hodnoty akcelerace\\
+\item Electrodermal activity - detekce podle elektrodermální aktivity\\
+v Mean - použití průměru za časové okno\\
+\item Window size - mean - velikost klouzavého okénka pro spočítání průměru (v případě velikosti okna 1 je průměr rovná aktuální hodnotě)\\
+\item Detect IST edges - potvrzení detekce sestupnou hranou dat IST\\
+\item Signal - detekovaný signal\\
+\item Window size - edges - velikost klouzavého okénka pro detekci hran\\
+\item Thresholds - threshold ukazatelů pro detekci a thresholdy a váhy pro detekci hran
+\end{itemize}
 
-Filtr posílá detekovanou fyzickou aktivitu.
+\noindent Filtr posílá detekovanou fyzickou aktivitu.
 Příklad konfigurace s měřeným srdečním tepem a počtem kroků je v konfiguračním souboru \texttt{setup/setup\_bpm.ini}. Příklad konfigurace s akcelerací a potvrzováním pomocí detekce sestupné hrany je v konfiguračním souboru \texttt{setup/setup\_acc.ini}.
 
 \subsection*{Evaluation}
 
 Filtr pro vyhodnocení výsledků.
 
-\noindent- Reference signal - referenční signál\\
-- Detected signál - detekovaný signál\\
-- Max detection delay - maximální zpoždění, které může mít detekovaný signál oproti referenčnímu\\
-- False positive cooldown - cooldown po detekci falešně pozitivního signálu, než je započítán další\\
-- Late detection delay - čas před referenčním signálem, kdy se bude detekce počítat jako pravdivě pozitivní\\
-- Min reference count - minimální počet referenčních signálů za den
+\begin{itemize}
+\setlength\itemsep{-1.5em}
+\item Reference signal - referenční signál\\
+\item Detected signál - detekovaný signál\\
+\item Max detection delay - maximální zpoždění, které může mít detekovaný signál oproti referenčnímu\\
+\item False positive cooldown - cooldown po detekci falešně pozitivního signálu, než je započítán další\\
+\item Late detection delay - čas před referenčním signálem, kdy se bude detekce počítat jako pravdivě pozitivní\\
+\item Min reference count - minimální počet referenčních signálů za den
+\end{itemize}
 
-Filtr na konci běhu simulace posílá info s naměřenými statistikami počtu referenčních signálů TP, potvrzené TP, FN, FP, zpoždění detekce a zpoždění potvrzení.
-
+\noindent Filtr na konci běhu simulace posílá info s naměřenými statistikami počtu referenčních signálů TP, potvrzené TP, FN, FP, zpoždění detekce a zpoždění potvrzení.
 
 \section*{Python skripty}
 \addcontentsline{toc}{section}{Python skripty}
 
-\begin{setlength}{\parskip}{0pt}
-Skripty umožňují transformaci a modifikaci dat BGLP, trénování rekurentní neuronové sítě a analýzu metod detekce karbohydrátů a fyzické aktivity. V souboru `main.py` jsou příklady spuštění jednotlivých skriptů.
-Pro spuštění skriptů je nutné mít nainstalovaný Python 3.7 nebo 3.8. Python 3.9 není podporovaný z důvodu nepodporované kompatibilitě s knihovnou TensorFlow. Dále je nutné mít nainstalované tyto balíčky:
+Skripty umožňují transformaci a modifikaci dat BGLP, trénování
+rekurentní neuronové sítě a analýzu metod detekce karbohydrátů a fyzické
+aktivity. Pro spuštění skriptů je nutné mít nainstalovaný Python 3.7
+nebo 3.8. Python 3.9 není podporovaný z důvodu nepodporované
+kompatibilitě s knihovnou TensorFlow. Dále je nutné mít nainstalované
+tyto balíčky: numpy, pandas, scipy, sklearn, tensorflow, tabulate, matplotlib, sweetviz.
+
+V souboru \texttt{examples.py} jsou příklady práce se skripty:
 
 \begin{itemize}
-\setlength\itemsep{0em}
-\item numpy
-\item pandas
-\item scipy
-\item sklearn
-\item tensorflow
-\item tabulate
-\item matplotlib
-\item sweetviz
+\itemsep1pt\parskip0pt\parsep0pt
+\item lg.load\_log()- transformace dat z logu do csv
+\item ld.load\_data() - modifikace dat pro detekci karbohydrátů nebo fyzické aktivity
+\item cho.rnn() - trénování RNN
+\item cho.lda() - LDA/GDA
+\item cho.threshold() - detekce hran IST
+\item pa.get\_feature() - spočtení vlastností (průměr, medián, směrodatná odchylka, rozdíl kvartilů)
+\item pa.export\_features() - export vlastností do csv
+\item pa.ML() - test metod strojového učení pro detekci fyzické aktivity
 \end{itemize}
-\end{setlength}
 
 \subsection*{Trénování neuronové sítě}
 
-Pro natrénování keras modelu rekurentní neuronové sítě je připraven skript \texttt{train\_rnn.py}.  Ten se spouští příkazem \texttt{python train\_rnn.py <type> <option> [IDs]}, kdy \texttt{type} je typ neuronové \texttt{-gru} nebo \texttt{-lstm}, \texttt{option} určuje zda budeme trénovat pro každého pacienta individuální model \texttt{-i} nebo společný model \texttt{-a}. \texttt{IDs} je pole id pacientů. Vstupní soubory musí být v adresáři \texttt{/model} a být pojmenované \texttt{[ID]-ws-training.log}.
+Pro natrénování keras modelu rekurentní neuronové sítě je připraven skript \texttt{train\_rnn.py}. Ten se spouští příkazem \texttt{python train\_rnn.py\textless{}type\textgreater{} \textless{}options\textgreater{} {[}values{]}}, kdy \texttt{type} je typ neuronové \texttt{-gru} nebo \texttt{-lstm} (povinný parametr) a \texttt{options} jsou volitelné parametry: 
+
+\noindent -f ~ název logu pacienta (* pro natrénování modelu na všech logách v adresáři)\\
+ -i ~ adresář se vstupními logy (defaultně data/)\\
+ -o ~ adresář pro uložení natrénovaného modelu (defaultně model/)\\
+ -h ~ nápověda
+
+\noindent Příklad natrénování GRU pro všechny pacienty: \texttt{python train\_rnn.py -gru -f * -i data/ -o model/} Příklad natrénování LSTM pro pacienta 575: \texttt{python train\_rnn.py -lstm -f 575-ws-training.log -i data/ -o model/}
