@@ -1,0 +1,64 @@
+Heartbeat
+559 PA count: 7 Accuracy detection: 0.857143, delay: 21.5714, TP detected: 6, Accuracy confirmed: 0.857143, confirmation delay: 0, TP confirmed: 6, FN: 1, FP: 28
+563 PA count: 3 Accuracy detection: 0.666667, delay: 3.33333, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 59
+570 PA count: 2 Accuracy detection: 1,        delay: 13.5,    TP detected: 2, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 2, FN: 0, FP: 29
+588 PA count: 3 Accuracy detection: 0.666667, delay: 7.66667, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 4 
+591 PA count: 4 Accuracy detection: 1,        delay: 5,       TP detected: 4, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 4, FN: 0, FP: 2 
+
+Steps
+559 PA count: 7 Accuracy detection: 1,        delay: 2.85714, TP detected: 7, Accuracy confirmed: 1,        confirmation delay: 0,       TP confirmed: 7, FN: 0, FP: 7     TR 45
+563 PA count: 3 Accuracy detection: 0.666667, delay: 3,       TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0,       TP confirmed: 2, FN: 1, FP: 12    Tr 45
+570 PA count: 2 Accuracy detection: 1,        delay: 13.5,    TP detected: 2, Accuracy confirmed: 1,        confirmation delay: 0,       TP confirmed: 2, FN: 0, FP: 43    Tr 12
+588 PA count: 3 Accuracy detection: 1,        delay: 6.66667, TP detected: 3, Accuracy confirmed: 1,        confirmation delay: 0,       TP confirmed: 3, FN: 0, FP: 2     TR 45
+591 PA count: 4 Accuracy detection: 0.75,     delay: 0.25,    TP detected: 3, Accuracy confirmed: 0.75,     confirmation delay: 3.33333, TP confirmed: 3, FN: 1, FP: 9     Tr 28
+ 
+Electrodermal
+559 PA count: 7 Accuracy detection: 0.714286, delay: 18,      TP detected: 5, Accuracy confirmed: 0.714286, confirmation delay: 0, TP confirmed: 5, FN: 2, FP: 0   Tr 15
+563 PA count: 3 Accuracy detection: 0.666667, delay: 3.66667, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 3   Tr 10
+570 PA count: 2 Accuracy detection: 0.5,      delay: 25.5,    TP detected: 1, Accuracy confirmed: 0.5,      confirmation delay: 0, TP confirmed: 1, FN: 1, FP: 0   TR 10
+588 PA count: 3 Accuracy detection: 0.666667, delay: 31.6667, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 2   TR 3
+591 PA count: 4 Accuracy detection: 0.75,     delay: 14.25,   TP detected: 3, Accuracy confirmed: 0.75,     confirmation delay: 0, TP confirmed: 3, FN: 1, FP: 3   TR 10
+
+Heartbet/Steps
+559 PA count: 7 Accuracy detection: 0.857143, delay: 21.5714, TP detected: 6, Accuracy confirmed: 0.857143, confirmation delay: 0, TP confirmed: 6, FN: 1, FP: 1
+563 PA count: 3 Accuracy detection: 0.666667, delay: 1.33333, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 6
+570 PA count: 2 Accuracy detection: 1,        delay: 16,      TP detected: 2, Accuracy confirmed: 1, confirmation delay: 0,        TP confirmed: 2, FN: 0, FP: 20
+588 PA count: 3 Accuracy detection: 0.666667, delay: 7.66667, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0, TP confirmed: 2, FN: 1, FP: 1
+591 PA count: 4 Accuracy detection: 0.75,     delay: 5.5,     TP detected: 3, Accuracy confirmed: 0.75, confirmation delay: 0,     TP confirmed: 3, FN: 1, FP: 0
+
+Heartbeat/Electrodermal
+559 PA count: 7 Accuracy detection: 0.428571, delay: 19.1429, TP detected: 3, Accuracy confirmed: 0.428571, confirmation delay: 0,         TP confirmed: 3, FN: 4, FP: 0
+563 PA count: 3 Accuracy detection: 0.666667, delay: 3.33333, TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0,         TP confirmed: 2, FN: 1, FP: 1
+570 PA count: 2 Accuracy detection: 0.5,      delay: 25.5,    TP detected: 1, Accuracy confirmed: 0.5,      confirmation delay: 0,         TP confirmed: 1, FN: 1, FP: 0
+588 PA count: 3 Accuracy detection: 0,        delay: 0,       TP detected: 0, Accuracy confirmed: 0,        confirmation delay: -nan(ind), TP confirmed: 0, FN: 3, FP: 0
+591 PA count: 4 Accuracy detection: 0.5,      delay: 12.5,    TP detected: 2, Accuracy confirmed: 0.5,      confirmation delay: 0,         TP confirmed: 2, FN: 2, FP: 0
+
+Steps/Electrodermal
+559 PA count: 7 Accuracy detection: 0.714286, delay: 18,   TP detected: 5, Accuracy confirmed: 0.714286, confirmation delay: 0,         TP confirmed: 5, FN: 2, FP: 0
+563 PA count: 3 Accuracy detection: 0.666667, delay: 5,    TP detected: 2, Accuracy confirmed: 0.666667, confirmation delay: 0,         TP confirmed: 2, FN: 1, FP: 1
+570 PA count: 2 Accuracy detection: 0.5,      delay: 27.5, TP detected: 1, Accuracy confirmed: 0.5,      confirmation delay: 0,         TP confirmed: 1, FN: 1, FP: 0
+588 PA count: 3 Accuracy detection: 0,        delay: 0,    TP detected: 0, Accuracy confirmed: 0,        confirmation delay: -nan(ind), TP confirmed: 0, FN: 3, FP: 0
+591 PA count: 4 Accuracy detection: 0.5,      delay: 11.5, TP detected: 2, Accuracy confirmed: 0.5,      confirmation delay: 0,         TP confirmed: 2, FN: 2, FP: 1
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Acceleration
+544 PA count: 2 Accuracy  detection: 1,        delay: 33.5,    TP detected: 2,  Accuracy confirmed: 1,        confirmation delay: 0,   TP confirmed: 2,  FN: 0, FP: 31   TR 1,1
+552 PA count: 2 Accuracy  detection: 1,        delay: 12.5,    TP detected: 2,  Accuracy confirmed: 1,        confirmation delay: 0.5, TP confirmed: 2,  FN: 0, FP: 1    TR 1,5
+584 PA count: 1 Accuracy  detection: 1,        delay: 3,       TP detected: 1,  Accuracy confirmed: 1,        confirmation delay: 0,   TP confirmed: 1,  FN: 0, FP: 4    TR 1,5
+596 PA count: 12 Accuracy detection: 0.916667, delay: 52.8333, TP detected: 11, Accuracy confirmed: 0.916667, confirmation delay: 0,   TP confirmed: 11, FN: 1, FP: 28   TR 1,1
+
+Electrodermal
+544 PA count: 2  Accuracy detection: 1,        delay: 23.5,    TP detected: 2, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 2, FN: 0, FP: 22    TR 15
+552 PA count: 2  Accuracy detection: 1,        delay: 28,      TP detected: 2, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 2, FN: 0, FP: 2     TR 2
+584 PA count: 1  Accuracy detection: 1,        delay: 12,      TP detected: 1, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 1, FN: 0, FP: 12    TR 35
+596 PA count: 12 Accuracy detection: 0.416667, delay: 28.4167, TP detected: 5, Accuracy confirmed: 0.416667, confirmation delay: 0, TP confirmed: 5, FN: 7, FP: 7     TR 1
+
+Acceleration/Electrodermal
+544 PA count: 2  Accuracy detection: 1,        delay: 33.5,    TP detected: 2, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 2, FN: 0, FP: 9
+552 PA count: 2  Accuracy detection: 0.5,      delay: 35,      TP detected: 1, Accuracy confirmed: 0.5,      confirmation delay: 0, TP confirmed: 1, FN: 1, FP: 0
+584 PA count: 1  Accuracy detection: 1,        delay: 18,      TP detected: 1, Accuracy confirmed: 1,        confirmation delay: 0, TP confirmed: 1, FN: 0, FP: 1
+596 PA count: 12 Accuracy detection: 0.166667, delay: 12.9167, TP detected: 2, Accuracy confirmed: 0.166667, confirmation delay: 0, TP confirmed: 2, FN: 10, FP: 0
+
+
+ 

@@ -1,0 +1,66 @@
+Threshold:
+pacien        jídla                  úspěšnost  zpoždění                     TP                      Potvrzeno                                         
+540 CHO count: 22 Accuracy detection: 0.909091, delay: 35.6652, TP detected: 20, Accuracy confirmed: 0.409091, confirmation delay: 35.0019, TP confirmed: 9,  FN: 2, FP: 9
+544 CHO count: 40 Accuracy detection: 0.850000, delay: 22.75,   TP detected: 34, Accuracy confirmed: 0.725,    confirmation delay: 43.7931, TP confirmed: 29, FN: 6, FP: 5
+552 CHO count: 12 Accuracy detection: 0.666667, delay: 7.40833, TP detected: 8,  Accuracy confirmed: 0.25,     confirmation delay: 33.3333, TP confirmed: 3,  FN: 3, FP: 1
+559 CHO count: 23 Accuracy detection: 0.913043, delay: 33.8696, TP detected: 21, Accuracy confirmed: 0.521739, confirmation delay: 25.8333, TP confirmed: 12, FN: 1, FP: 10
+563 CHO count: 24 Accuracy detection: 0.875000, delay: 26.5,    TP detected: 21, Accuracy confirmed: 0.583333, confirmation delay: 46.0714, TP confirmed: 14, FN: 2, FP: 16
+570 CHO count: 29 Accuracy detection: 0.896552, delay: 43.2414, TP detected: 26, Accuracy confirmed: 0.482759, confirmation delay: 44.2857, TP confirmed: 14, FN: 3, FP: 15
+575 CHO count: 42 Accuracy detection: 0.833333, delay: 21.619,  TP detected: 35, Accuracy confirmed: 0.52381,  confirmation delay: 47.9545, TP confirmed: 22, FN: 7, FP: 11
+584 CHO count: 13 Accuracy detection: 0.615385, delay: 33.6923, TP detected: 8,  Accuracy confirmed: 0.307692, confirmation delay: 82.5,    TP confirmed: 4,  FN: 4, FP: 10
+588 CHO count: 35 Accuracy detection: 0.885714, delay: 23.9714, TP detected: 31, Accuracy confirmed: 0.514286, confirmation delay: 49.7222, TP confirmed: 18, FN: 4, FP: 11
+591 CHO count: 41 Accuracy detection: 0.878049, delay: 27.3415, TP detected: 36, Accuracy confirmed: 0.414634, confirmation delay: 40,      TP confirmed: 17, FN: 4, FP: 16
+596 CHO count: 59 Accuracy detection: 0.830508, delay: 26.9322, TP detected: 49, Accuracy confirmed: 0.423729, confirmation delay: 36.8,    TP confirmed: 25, FN: 9, FP: 8
+
+
+RNN (individual):
+540 CHO count: 22 Accuracy detection: 0.681818, delay: 38.2477, TP detected: 15, Accuracy confirmed: 0.681818, confirmation delay: 0, TP confirmed: 15, FN: 7,  FP: 5
+544 CHO count: 40 Accuracy detection: 0.675,    delay: 44.075,  TP detected: 27, Accuracy confirmed: 0.675,    confirmation delay: 0, TP confirmed: 27, FN: 13, FP: 33
+552 CHO count: 12 Accuracy detection: 0.583333, delay: 33.6736, TP detected: 7,  Accuracy confirmed: 0.583333, confirmation delay: 0, TP confirmed: 7,  FN: 4,  FP: 3
+559 CHO count: 23 Accuracy detection: 0,        delay: nan,     TP detected: 0,  Accuracy confirmed: 0,        confirmation delay: 0, TP confirmed: 0,  FN: 22, FP: 2
+563 CHO count: 24 Accuracy detection: 0.625,    delay: 13.0417, TP detected: 15, Accuracy confirmed: 0.625,    confirmation delay: 0, TP confirmed: 15, FN: 8,  FP: 39
+570 CHO count: 29 Accuracy detection: 0.37931,  delay: 24.8966, TP detected: 11, Accuracy confirmed: 0.37931,  confirmation delay: 0, TP confirmed: 11, FN: 18, FP: 17
+575 CHO count: 42 Accuracy detection: 0.714286, delay: 23.1905, TP detected: 30, Accuracy confirmed: 0.714286, confirmation delay: 0, TP confirmed: 30, FN: 12, FP: 31
+584 CHO count: 13 Accuracy detection: 0.153846, delay: 9.76923, TP detected: 2,  Accuracy confirmed: 0.153846, confirmation delay: 0, TP confirmed: 2,  FN: 10, FP: 1
+588 CHO count: 35 Accuracy detection: 0,        delay: 0,       TP detected: 0,  Accuracy confirmed: 0,        confirmation delay: 0, TP confirmed: 0,  FN: 35, FP: 1
+591 CHO count: 41 Accuracy detection: 0.146341, delay: 7.26829, TP detected: 6,  Accuracy confirmed: 0.146341, confirmation delay: 0, TP confirmed: 6,  FN: 34, FP: 13
+596 CHO count: 59 Accuracy detection: 0.474576, delay: 18.1356, TP detected: 28, Accuracy confirmed: 0.474576, confirmation delay: 0, TP confirmed: 28, FN: 31, FP: 27
+
+Th+RNN (individual):
+540 CHO count: 22 Accuracy detection: 0.909091, delay: 27.2561, TP detected: 20, Accuracy confirmed: 0.454545, confirmation delay: 35.5033, TP confirmed: 10, FN: 2, FP: 3
+544 CHO count: 40 Accuracy detection: 0.9,      delay: 15,      TP detected: 36, Accuracy confirmed: 0.325,    confirmation delay: 32.6923, TP confirmed: 13, FN: 4, FP: 17
+552 CHO count: 12 Accuracy detection: 0.75,     delay: 16.1153, TP detected: 9,  Accuracy confirmed: 0.166667, confirmation delay: 5,       TP confirmed: 2,  FN: 2, FP: 2
+559 CHO count: 23 Accuracy detection: 0.913043, delay: 33.8696, TP detected: 21, Accuracy confirmed: 0,        confirmation delay: -nan,    TP confirmed: 0,  FN: 1, FP: 1
+563 CHO count: 24 Accuracy detection: 0.875,    delay: 10.25,   TP detected: 21, Accuracy confirmed: 0.541667, confirmation delay: 33.4615, TP confirmed: 13, FN: 2, FP: 22
+570 CHO count: 29 Accuracy detection: 0.931034, delay: 40.7586, TP detected: 27, Accuracy confirmed: 0.206897, confirmation delay: 40,      TP confirmed: 6,  FN: 2, FP: 3
+575 CHO count: 42 Accuracy detection: 0.952381, delay: 17.4048, TP detected: 40, Accuracy confirmed: 0.47619,  confirmation delay: 18.25,   TP confirmed: 20, FN: 2, FP: 13
+584 CHO count: 13 Accuracy detection: 0.615385, delay: 17.5385, TP detected: 8,  Accuracy confirmed: 0,        confirmation delay: -nan,    TP confirmed: 0,  FN: 4, FP: 0
+588 CHO count: 35 Accuracy detection: 0.885714, delay: 23.9714, TP detected: 31, Accuracy confirmed: 0,        confirmation delay: -nan,    TP confirmed: 0,  FN: 4, FP: 0
+591 CHO count: 41 Accuracy detection: 0.926829, delay: 27.5122, TP detected: 38, Accuracy confirmed: 0.0487805,confirmation delay: 15,      TP confirmed: 2,  FN: 2, FP: 6
+596 CHO count: 59 Accuracy detection: 0.881356, delay: 19.0508, TP detected: 52, Accuracy confirmed: 0.355932, confirmation delay: 53.5714, TP confirmed: 21, FN: 7, FP: 11
+
+RNN:
+540 CHO count: 22 Accuracy detection: 0.909091, delay: 24.678,  TP detected: 20, Accuracy confirmed: 0.909091, confirmation delay: 0, TP confirmed: 20,   FN:  2, FP: 15
+544 CHO count: 40 Accuracy detection: 0.5,      delay: 26.575,  TP detected: 20, Accuracy confirmed: 0.5,      confirmation delay: 0, TP confirmed: 20,   FN: 19, FP: 23
+552 CHO count: 12 Accuracy detection: 0.583333, delay: 23.2569, TP detected:  7, Accuracy confirmed: 0.583333, confirmation delay: 0, TP confirmed:  7,   FN:  4, FP: 8
+559 CHO count: 23 Accuracy detection: 0.391304, delay: 11.1739, TP detected:  9, Accuracy confirmed: 0.391304, confirmation delay: 0, TP confirmed:  9,   FN: 13, FP: 19
+563 CHO count: 24 Accuracy detection: 0.166667, delay: 7.91667, TP detected:  4, Accuracy confirmed: 0.166667, confirmation delay: 0, TP confirmed:  4,   FN: 19, FP: 13
+570 CHO count: 29 Accuracy detection: 0.241379, delay: 12.7241, TP detected:  7, Accuracy confirmed: 0.241379, confirmation delay: 0, TP confirmed:  7,   FN: 22, FP: 8
+575 CHO count: 42 Accuracy detection: 0.595238, delay: 34.4048, TP detected: 25, Accuracy confirmed: 0.595238, confirmation delay: 0, TP confirmed: 25,   FN: 17, FP: 28
+584 CHO count: 13 Accuracy detection: 0.538462, delay: 11.6154, TP detected:  7, Accuracy confirmed: 0.538462, confirmation delay: 0, TP confirmed:  7,   FN:  5, FP: 10
+588 CHO count: 35 Accuracy detection: 0.257143, delay: 21.7714, TP detected:  9, Accuracy confirmed: 0.257143, confirmation delay: 0, TP confirmed:  9,   FN: 26, FP: 14
+591 CHO count: 41 Accuracy detection: 0.682927, delay: 33.2195, TP detected: 28, Accuracy confirmed: 0.682927, confirmation delay: 0, TP confirmed: 28,   FN: 12, FP: 31
+596 CHO count: 59 Accuracy detection: 0.559322, delay: 24.1017, TP detected: 33, Accuracy confirmed: 0.559322, confirmation delay: 0, TP confirmed: 33,   FN: 25, FP: 19
+
+Th+RNN:
+540 CHO count: 22 Accuracy detection: 0.954545, delay: 16.8841, TP detected: 21, Accuracy confirmed: 0.636364, confirmation delay: 21.4286, TP confirmed: 14, FN: 1, FP: 7
+544 CHO count: 40 Accuracy detection: 0.85,     delay: 22.25,   TP detected: 34, Accuracy confirmed: 0.35,     confirmation delay: 4.64286, TP confirmed: 14, FN: 5, FP: 12
+552 CHO count: 12 Accuracy detection: 0.75,     delay: 11.5319, TP detected: 9,  Accuracy confirmed: 0.5,      confirmation delay: 34.1667, TP confirmed:  6, FN: 2, FP: 5
+559 CHO count: 23 Accuracy detection: 0.913043, delay: 27.5652, TP detected: 21, Accuracy confirmed: 0.391304, confirmation delay: 18.8889, TP confirmed:  9, FN: 1, FP: 7
+563 CHO count: 24 Accuracy detection: 0.875,    delay: 26.5,    TP detected: 21, Accuracy confirmed: 0.125,    confirmation delay: 11.6667, TP confirmed:  3, FN: 2, FP: 6
+570 CHO count: 29 Accuracy detection: 0.931034, delay: 36.3793, TP detected: 27, Accuracy confirmed: 0.103448, confirmation delay: 38.3333, TP confirmed:  3, FN: 2, FP: 2
+575 CHO count: 42 Accuracy detection: 0.904762, delay: 19.5714, TP detected: 38, Accuracy confirmed: 0.357143, confirmation delay: 40.3333, TP confirmed: 15, FN: 4, FP: 12
+584 CHO count: 13 Accuracy detection: 0.615385, delay: 19.8462, TP detected: 8,  Accuracy confirmed: 0.461538, confirmation delay: 48.3333, TP confirmed:  6, FN: 4, FP: 5
+588 CHO count: 35 Accuracy detection: 0.885714, delay: 22.6857, TP detected: 31, Accuracy confirmed: 0.171429, confirmation delay: 52.5,    TP confirmed:  6, FN: 4, FP: 10
+591 CHO count: 41 Accuracy detection: 0.902439, delay: 16.0732, TP detected: 37, Accuracy confirmed: 0.487805, confirmation delay: 47.75,   TP confirmed: 20, FN: 3, FP: 15
+596 CHO count: 59 Accuracy detection: 0.881356, delay: 22.678,  TP detected: 52, Accuracy confirmed: 0.338983, confirmation delay: 28.75,   TP confirmed: 20, FN: 6, FP: 8
